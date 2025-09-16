@@ -1,0 +1,29 @@
+/* Circle image preview */
+.avatar-wrap {
+  width: 96px;
+  height: 96px;
+  border-radius: 9999px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef2ff;
+  border: 2px solid rgba(79, 70, 229, 0.15);
+}
+
+/* Sidebar hover */
+.nav-item:hover {
+  background-color: rgba(79, 70, 229, 0.06);
+  transform: translateX(4px);
+}
+
+/* Required field star */
+.required-star {
+  color: #ef4444;
+  margin-left: 4px;
+}
+
+/* Smooth transitions */
+.section-card {
+  transition: all 0.18s ease-in-out;
+}
