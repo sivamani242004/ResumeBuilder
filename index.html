@@ -1,71 +1,414 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Resume Builder</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              indigo: {
-                450: "#5b21b6"
-              }
-            }
-          }
-        }
-      };
-    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link rel="stylesheet" href="styles.css" />
   </head>
-  <body class="bg-gray-50 text-gray-800 min-h-screen">
-    <div class="max-w-6xl mx-auto p-6">
-      <header class="mb-6">
-        <h1 class="text-2xl font-semibold">Resume Builder</h1>
-        <p class="text-sm text-gray-600 mt-1">
-          Professional, responsive. Click a section to edit it — only one
-          section visible at a time.
-        </p>
-      </header>
+  <body class="bg-gray-50 font-sans text-gray-700 min-h-screen flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r h-screen p-4 overflow-y-auto">
+      <h1 class="text-xl font-bold mb-6">Resume Builder</h1>
+      <nav class="space-y-2">
+        <button
+          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
+          data-target="personal"
+        >
+          <span class="icon">👤</span>
+          <span class="label text-sm">Personal</span>
+        </button>
+        <button
+          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
+          data-target="objective"
+        >
+          <span class="icon">🎯</span>
+          <span class="label text-sm">Objective</span>
+        </button>
+        <button
+          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
+          data-target="education"
+        >
+          <span class="icon">🎓</span>
+          <span class="label text-sm">Education</span>
+        </button>
+        <button
+          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
+          data-target="skills"
+        >
+          <span class="icon">💡</span>
+          <span class="label text-sm">Skills</span>
+        </button>
+        <button
+          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
+          data-target="projects"
+        >
+          <span class="icon">📂</span>
+          <span class="label text-sm">Projects</span>
+        </button>
+        <button
+          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
+          data-target="work"
+        >
+          <span class="icon">💼</span>
+          <span class="label text-sm">Work</span>
+        </button>
+        <button
+          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
+          data-target="certifications"
+        >
+          <span class="icon">📜</span>
+          <span class="label text-sm">Certifications</span>
+        </button>
+        <button
+          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
+          data-target="activities"
+        >
+          <span class="icon">🏃</span>
+          <span class="label text-sm">Activities</span>
+        </button>
+        <button
+          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
+          data-target="custom"
+        >
+          <span class="icon">⭐</span>
+          <span class="label text-sm">Custom</span>
+        </button>
+        <button
+          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
+          data-target="template"
+        >
+          <span class="icon">📄</span>
+          <span class="label text-sm">Template</span>
+        </button>
+      </nav>
+    </aside>
 
-      <div class="grid grid-cols-12 gap-6">
-        <!-- Sidebar -->
-        <aside class="col-span-12 lg:col-span-4 xl:col-span-3">
-          <div class="bg-white rounded-2xl shadow p-4">
-            <nav class="space-y-2">
-              <template id="nav-template">
-                <button
-                  class="nav-item w-full text-left rounded-xl px-3 py-2 flex items-center gap-3 hover:text-indigo-600 transition-colors"
+    <!-- Main Content -->
+    <main class="flex-1 p-6 overflow-y-auto">
+      <div id="sections-container">
+        <!-- Personal Section -->
+        <div
+          id="section-personal"
+          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
+        >
+          <h2 class="text-lg font-semibold">Personal</h2>
+          <form
+            id="form-personal"
+            class="mt-4 space-y-4"
+            onsubmit="return false"
+          >
+            <div class="flex items-center gap-4">
+              <div class="avatar-wrap" id="avatarPreview">
+                <span class="text-xs text-gray-500">No photo</span>
+              </div>
+              <div class="flex-1">
+                <label class="block text-sm"
+                  >Full name <span class="required-star">*</span></label
                 >
-                  <span class="icon w-6 h-6 flex items-center justify-center"></span>
-                  <span class="label flex-1"></span>
-                </button>
-              </template>
-            </nav>
-            <div
-              class="mt-4 border-t pt-4 text-xs text-gray-500"
+                <input
+                  required
+                  name="fullname"
+                  class="mt-1 w-full rounded-lg border px-3 py-2"
+                  placeholder="Your full name"
+                />
+                <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-sm"
+                      >Email <span class="required-star">*</span></label
+                    >
+                    <input
+                      required
+                      name="email"
+                      id="personalEmail"
+                      type="email"
+                      class="mt-1 w-full rounded-lg border px-3 py-2"
+                      placeholder="yourname@gmail.com"
+                    />
+                    <p id="emailErr" class="text-xs text-red-500 mt-1 hidden">
+                      Email must end with @gmail.com
+                    </p>
+                  </div>
+                  <div>
+                    <label class="block text-sm"
+                      >Phone <span class="required-star">*</span></label
+                    >
+                    <input
+                      required
+                      name="phone"
+                      id="personalPhone"
+                      type="tel"
+                      class="mt-1 w-full rounded-lg border px-3 py-2"
+                      placeholder="9312345678"
+                    />
+                    <p id="phoneErr" class="text-xs text-red-500 mt-1 hidden">
+                      Phone must be numeric and cannot start with 0
+                    </p>
+                  </div>
+                </div>
+                <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-sm">LinkedIn URL</label>
+                    <input
+                      name="linkedin"
+                      id="linkedinInput"
+                      type="url"
+                      class="mt-1 w-full rounded-lg border px-3 py-2"
+                      placeholder="https://www.linkedin.com/in/yourname"
+                    />
+                    <p id="liErr" class="text-xs text-red-500 mt-1 hidden">
+                      Enter a valid URL
+                    </p>
+                  </div>
+                  <div>
+                    <label class="block text-sm">GitHub URL</label>
+                    <input
+                      name="github"
+                      id="githubInput"
+                      type="url"
+                      class="mt-1 w-full rounded-lg border px-3 py-2"
+                      placeholder="https://github.com/yourname"
+                    />
+                    <p id="gitErr" class="text-xs text-red-500 mt-1 hidden">
+                      Enter a valid URL
+                    </p>
+                  </div>
+                </div>
+                <div class="mt-3 flex items-center gap-3">
+                  <label class="block text-sm w-28">Profile photo</label>
+                  <div>
+                    <input type="file" id="profileUpload" accept="image/*" />
+                    <p class="text-xs text-gray-500 mt-1">
+                      PNG/JPG. Shown inside a circle.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Objective Section -->
+        <div
+          id="section-objective"
+          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
+        >
+          <h2 class="text-lg font-semibold">Objective</h2>
+          <div class="mt-4">
+            <label class="text-sm">Summary</label>
+            <textarea
+              id="objectiveText"
+              oninput="autoExpandTextarea(this)"
+              class="mt-2 w-full rounded-lg border px-3 py-2 resize-none"
+              placeholder="Write a short objective..."
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Education Section -->
+        <div
+          id="section-education"
+          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
+        >
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Education</h2>
+            <button
+              id="addEducationBtn"
+              class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
             >
-              Tip: hover a section to preview color. Required fields show
-              <span class="required-star">*</span>.
+              Add
+            </button>
+          </div>
+          <div id="educationList" class="mt-4 space-y-3"></div>
+        </div>
+
+        <!-- Skills Section -->
+        <div
+          id="section-skills"
+          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
+        >
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Skills</h2>
+            <div class="text-sm text-gray-500">Use dropdowns to categorize</div>
+          </div>
+          <div class="mt-4 space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <select id="skillCategory" class="rounded-lg border px-3 py-2">
+                <option>Frontend</option>
+                <option>Backend</option>
+                <option>DevOps</option>
+                <option>Soft Skills</option>
+                <option>Other</option>
+              </select>
+              <select id="skillSub" class="rounded-lg border px-3 py-2">
+                <option>React</option>
+                <option>Angular</option>
+                <option>Node</option>
+                <option>Communication</option>
+              </select>
+              <select id="skillTool" class="rounded-lg border px-3 py-2">
+                <option>VS Code</option>
+                <option>Git</option>
+                <option>Figma</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm">Add custom skill</label>
+              <div class="mt-2 flex gap-2">
+                <input
+                  id="skillInput"
+                  class="flex-1 rounded-lg border px-3 py-2"
+                  placeholder="e.g. Storybook"
+                />
+                <button
+                  id="addSkillBtn"
+                  class="px-3 py-2 rounded bg-indigo-600 text-white"
+                >
+                  Add
+                </button>
+              </div>
+              <div id="skillTags" class="mt-3 flex flex-wrap gap-2"></div>
             </div>
           </div>
-        </aside>
+        </div>
 
-        <!-- Main content -->
-        <main class="col-span-12 lg:col-span-8 xl:col-span-9">
-          <div id="sections-container"></div>
-        </main>
+        <!-- Projects Section -->
+        <div
+          id="section-projects"
+          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
+        >
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Projects</h2>
+            <button
+              id="addProjectBtn"
+              class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
+            >
+              Add Project
+            </button>
+          </div>
+          <div id="projectsList" class="mt-4 space-y-3"></div>
+        </div>
+
+        <!-- Work Section -->
+        <div
+          id="section-work"
+          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
+        >
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Work Experience</h2>
+            <button
+              id="addWorkBtn"
+              class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
+            >
+              Add New
+            </button>
+          </div>
+          <div id="workList" class="mt-4 space-y-3"></div>
+        </div>
+
+        <!-- Certifications Section -->
+        <div
+          id="section-certifications"
+          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
+        >
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Certifications</h2>
+            <button
+              id="addCertBtn"
+              class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
+            >
+              Add New
+            </button>
+          </div>
+          <div id="certList" class="mt-4 space-y-3"></div>
+        </div>
+
+        <!-- Activities Section -->
+        <div
+          id="section-activities"
+          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
+        >
+          <h2 class="text-lg font-semibold">Activities</h2>
+          <div class="mt-4">
+            <label class="text-sm">Extracurricular / Volunteering</label>
+            <textarea
+              id="activitiesText"
+              oninput="autoExpandTextarea(this)"
+              class="mt-2 w-full rounded-lg border px-3 py-2 resize-none"
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Custom Section -->
+        <div
+          id="section-custom"
+          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
+        >
+          <h2 class="text-lg font-semibold">Custom Section</h2>
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input
+              id="customTitle"
+              class="col-span-2 rounded-lg border px-3 py-2"
+              placeholder="Section title (will be added to list)"
+            />
+            <button
+              id="addCustomBtn"
+              class="rounded bg-indigo-600 text-white px-3 py-2"
+            >
+              Add
+            </button>
+          </div>
+          <div class="mt-3">
+            <textarea
+              id="customDetails"
+              oninput="autoExpandTextarea(this)"
+              class="mt-2 w-full rounded-lg border px-3 py-2 resize-none"
+              rows="3"
+              placeholder="Details..."
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Template Section -->
+        <div
+          id="section-template"
+          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
+        >
+          <h2 class="text-lg font-semibold">Template & Export</h2>
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <select id="templateSelect" class="rounded-lg border px-3 py-2">
+              <option>Classic</option>
+              <option>Modern</option>
+              <option>Elegant</option>
+            </select>
+            <div>
+              <label class="text-sm">Margins (px)</label>
+              <input
+                id="marginInput"
+                type="number"
+                value="20"
+                class="mt-1 rounded-lg border px-3 py-2"
+              />
+            </div>
+            <div class="flex items-end gap-2">
+              <button
+                id="exportPdfBtn"
+                class="px-3 py-2 rounded bg-indigo-600 text-white"
+              >
+                Export PDF
+              </button>
+              <button id="exportTxtBtn" class="px-3 py-2 rounded border">
+                Export TXT
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <footer class="mt-6 text-sm text-gray-500">
-        Built with Tailwind CSS • Demo version
-      </footer>
-    </div>
+    </main>
 
     <script src="script.js"></script>
   </body>
 </html>
-  
