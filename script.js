@@ -21,18 +21,127 @@ document.addEventListener("DOMContentLoaded", () => {
     textarea.style.height = textarea.scrollHeight + "px";
   };
 
-  // Add Education Entry
-  document.getElementById("addEducationBtn").addEventListener("click", () => {
-    const container = document.getElementById("educationList");
-    const div = document.createElement("div");
-    div.className =
-      "grid grid-cols-1 md:grid-cols-2 gap-3 bg-gray-50 rounded-lg p-3";
-    div.innerHTML = `
-      <input type="text" placeholder="Degree / Certification" class="rounded-lg border px-3 py-2">
-      <input type="text" placeholder="Institute / University" class="rounded-lg border px-3 py-2">
-    `;
-    container.appendChild(div);
-  });
+  // // Add Education Entry
+  // document.getElementById("addEducationBtn").addEventListener("click", () => {
+  //   const container = document.getElementById("educationList");
+  //   const div = document.createElement("div");
+  //   div.className =
+  //     "grid grid-cols-1 md:grid-cols-2 gap-3 bg-gray-50 rounded-lg p-3";
+  //   div.innerHTML = `
+  //     <input type="text" placeholder="Degree / Certification" class="rounded-lg border px-3 py-2">
+  //     <input type="text" placeholder="Institute / University" class="rounded-lg border px-3 py-2">
+  //   `;
+  //   container.appendChild(div);
+      
+  // }); 
+
+
+    const educationList = document.getElementById("educationList");
+    const addBtn = document.getElementById("addEducationBtn");
+
+    function createEducationCard() {
+      const card = document.createElement("div");
+      card.className = "p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
+
+      // Qualification wrapper
+      const qualificationWrapper = document.createElement("div");
+
+      const qualificationLabel = document.createElement("label");
+      qualificationLabel.textContent = "Qualification";
+      qualificationLabel.className = "block text-sm font-medium text-gray-700";
+
+      const qualificationSelect = document.createElement("select");
+      qualificationSelect.className = "mt-1 block w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
+
+      const options = [
+        "", "10th Class", "Intermediate", "Diploma", "Degree", "B-tech",
+        "Under-graduate", "Graduate", "PG", "Others"
+      ];
+      options.forEach(opt => {
+        const optionEl = document.createElement("option");
+        optionEl.value = opt;
+        optionEl.textContent = opt === "" ? "Select qualification" : opt;
+        qualificationSelect.appendChild(optionEl);
+      });
+
+      // Custom qualification input
+      const customQualification = document.createElement("input");
+      customQualification.type = "text";
+      customQualification.placeholder = "Enter qualification";
+      customQualification.className = "mt-2 hidden w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
+
+      qualificationSelect.addEventListener("change", () => {
+        if (qualificationSelect.value === "Others") {
+          customQualification.classList.remove("hidden");
+        } else {
+          customQualification.classList.add("hidden");
+          customQualification.value = "";
+        }
+      });
+
+      qualificationWrapper.appendChild(qualificationLabel);
+      qualificationWrapper.appendChild(qualificationSelect);
+      qualificationWrapper.appendChild(customQualification);
+
+      // College input
+      const collegeInput = document.createElement("input");
+      collegeInput.type = "text";
+      collegeInput.placeholder = "College/University/School";
+      collegeInput.className = "w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
+
+      // Location input
+      const locationInput = document.createElement("input");
+      locationInput.type = "text";
+      locationInput.placeholder = "Location";
+      locationInput.className = "w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
+
+      // Dates
+      const dateWrapper = document.createElement("div");
+      dateWrapper.className = "flex items-center space-x-2";
+
+      const startDate = document.createElement("input");
+      startDate.type = "date";
+      startDate.className = "w-1/2 px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
+
+      const endDate = document.createElement("input");
+      endDate.type = "date";
+      endDate.className = "w-1/2 px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
+
+      dateWrapper.appendChild(startDate);
+      dateWrapper.appendChild(endDate);
+
+      // Grade input
+      const gradeInput = document.createElement("input");
+      gradeInput.type = "number";
+      gradeInput.placeholder = "Grade/Score";
+      gradeInput.className = "w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
+
+      // Remove button
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.textContent = "Remove";
+      removeBtn.className = "absolute top-2 right-2 text-sm px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200";
+
+      removeBtn.addEventListener("click", () => {
+        educationList.removeChild(card);
+      });
+
+      // Append all
+      card.appendChild(qualificationWrapper);
+      card.appendChild(collegeInput);
+      card.appendChild(locationInput);
+      card.appendChild(dateWrapper);
+      card.appendChild(gradeInput);
+      card.appendChild(removeBtn);
+
+      return card;
+    }
+
+    // Add card on button click
+    addBtn.addEventListener("click", () => {
+      const newCard = createEducationCard();
+      educationList.appendChild(newCard);
+    });
 
   // Add Projects Entry
   document.getElementById("addProjectBtn").addEventListener("click", () => {
