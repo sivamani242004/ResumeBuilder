@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const sectionButtons = document.querySelectorAll(".section-button");
   const sections = document.querySelectorAll(".section-card");
 
+  // Show the first section by default
+  document.getElementById("section-personal").classList.remove("hidden");
+
   sectionButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const targetId = btn.getAttribute("data-target");
@@ -21,250 +24,252 @@ document.addEventListener("DOMContentLoaded", () => {
     textarea.style.height = textarea.scrollHeight + "px";
   };
 
-  // // Add Education Entry
-  // document.getElementById("addEducationBtn").addEventListener("click", () => {
-  //   const container = document.getElementById("educationList");
-  //   const div = document.createElement("div");
-  //   div.className =
-  //     "grid grid-cols-1 md:grid-cols-2 gap-3 bg-gray-50 rounded-lg p-3";
-  //   div.innerHTML = `
-  //     <input type="text" placeholder="Degree / Certification" class="rounded-lg border px-3 py-2">
-  //     <input type="text" placeholder="Institute / University" class="rounded-lg border px-3 py-2">
-  //   `;
-  //   container.appendChild(div);
-      
-  // }); 
+  // Education Section
+  const educationList = document.getElementById("educationList");
+  const addEducationBtn = document.getElementById("addEducationBtn");
 
+  function createEducationCard() {
+    const card = document.createElement("div");
+    card.className =
+      "p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
+    card.innerHTML = `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm">Qualification</label>
+          <select class="mt-1 block w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400 education-qualification">
+            <option value="">Select qualification</option>
+            <option value="10th Class">10th Class</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Diploma">Diploma</option>
+            <option value="Degree">Degree</option>
+            <option value="B-tech">B-tech</option>
+            <option value="Under-graduate">Under-graduate</option>
+            <option value="Graduate">Graduate</option>
+            <option value="PG">PG</option>
+            <option value="Others">Others</option>
+          </select>
+          <input type="text" placeholder="Enter qualification" class="mt-2 w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400 hidden education-custom-qualification">
+        </div>
+        <div>
+          <label class="block text-sm">College/University</label>
+          <input type="text" placeholder="College/University/School" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400 education-college">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm">Location</label>
+        <input type="text" placeholder="Location" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400 education-location">
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm">Start Date</label>
+          <input type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400 education-start-date">
+        </div>
+        <div>
+          <label class="block text-sm">End Date</label>
+          <input type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400 education-end-date">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm">Grade/Score</label>
+        <input type="text" placeholder="Grade/Score" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400 education-grade">
+      </div>
+      <button type="button" class="remove-btn absolute top-2 right-2 text-sm px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200">
+        Remove
+      </button>
+    `;
+    return card;
+  }
 
-    const educationList = document.getElementById("educationList");
-    const addBtn = document.getElementById("addEducationBtn");
-
-    function createEducationCard() {
-      const card = document.createElement("div");
-      card.className = "p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
-
-      // Qualification wrapper
-      const qualificationWrapper = document.createElement("div");
-
-      const qualificationLabel = document.createElement("label");
-      qualificationLabel.textContent = "Qualification";
-      qualificationLabel.className = "block text-sm font-medium text-gray-700";
-
-      const qualificationSelect = document.createElement("select");
-      qualificationSelect.className = "mt-1 block w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
-
-      const options = [
-        "", "10th Class", "Intermediate", "Diploma", "Degree", "B-tech",
-        "Under-graduate", "Graduate", "PG", "Others"
-      ];
-      options.forEach(opt => {
-        const optionEl = document.createElement("option");
-        optionEl.value = opt;
-        optionEl.textContent = opt === "" ? "Select qualification" : opt;
-        qualificationSelect.appendChild(optionEl);
-      });
-
-      // Custom qualification input
-      const customQualification = document.createElement("input");
-      customQualification.type = "text";
-      customQualification.placeholder = "Enter qualification";
-      customQualification.className = "mt-2 hidden w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
-
-      qualificationSelect.addEventListener("change", () => {
-        if (qualificationSelect.value === "Others") {
-          customQualification.classList.remove("hidden");
-        } else {
-          customQualification.classList.add("hidden");
-          customQualification.value = "";
-        }
-      });
-
-      qualificationWrapper.appendChild(qualificationLabel);
-      qualificationWrapper.appendChild(qualificationSelect);
-      qualificationWrapper.appendChild(customQualification);
-
-      // College input
-      const collegeInput = document.createElement("input");
-      collegeInput.type = "text";
-      collegeInput.placeholder = "College/University/School";
-      collegeInput.className = "w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
-
-      // Location input
-      const locationInput = document.createElement("input");
-      locationInput.type = "text";
-      locationInput.placeholder = "Location";
-      locationInput.className = "w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
-
-      // Dates
-      const dateWrapper = document.createElement("div");
-      dateWrapper.className = "flex items-center space-x-2";
-
-      const startDate = document.createElement("input");
-      startDate.type = "date";
-      startDate.className = "w-1/2 px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
-
-      const endDate = document.createElement("input");
-      endDate.type = "date";
-      endDate.className = "w-1/2 px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
-
-      dateWrapper.appendChild(startDate);
-      dateWrapper.appendChild(endDate);
-
-      // Grade input
-      const gradeInput = document.createElement("input");
-      gradeInput.type = "number";
-      gradeInput.placeholder = "Grade/Score";
-      gradeInput.className = "w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400";
-
-      // Remove button
-      const removeBtn = document.createElement("button");
-      removeBtn.type = "button";
-      removeBtn.textContent = "Remove";
-      removeBtn.className = "absolute top-2 right-2 text-sm px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200";
-
-      removeBtn.addEventListener("click", () => {
-        educationList.removeChild(card);
-      });
-
-      // Append all
-      card.appendChild(qualificationWrapper);
-      card.appendChild(collegeInput);
-      card.appendChild(locationInput);
-      card.appendChild(dateWrapper);
-      card.appendChild(gradeInput);
-      card.appendChild(removeBtn);
-
-      return card;
-    }
-
-    // Add card on button click
-    addBtn.addEventListener("click", () => {
-      const newCard = createEducationCard();
-      educationList.appendChild(newCard);
+  addEducationBtn.addEventListener("click", () => {
+    const newCard = createEducationCard();
+    educationList.appendChild(newCard);
+    const select = newCard.querySelector(".education-qualification");
+    const customInput = newCard.querySelector(
+      ".education-custom-qualification"
+    );
+    select.addEventListener("change", () => {
+      customInput.classList.toggle("hidden", select.value !== "Others");
     });
-
-  // Add Projects Entry
-  document.getElementById("addProjectBtn").addEventListener("click", () => {
-    const container = document.getElementById("projectsList");
-    const div = document.createElement("div");
-    div.className = "grid grid-cols-1 gap-3 bg-gray-50 rounded-lg p-3";
-    div.innerHTML = `
-      <input type="text" placeholder="Project Title" class="rounded-lg border px-3 py-2">
-      <textarea placeholder="Description" class="rounded-lg border px-3 py-2 resize-none" rows="3"></textarea>
-    `;
-    container.appendChild(div);
   });
 
-  // Add Work Entry
-  document.getElementById("addWorkBtn").addEventListener("click", () => {
-    const container = document.getElementById("workList");
-    const div = document.createElement("div");
-    div.className = "grid grid-cols-1 gap-3 bg-gray-50 rounded-lg p-3";
-    div.innerHTML = `
-      <input type="text" placeholder="Job Title" class="rounded-lg border px-3 py-2">
-      <input type="text" placeholder="Company" class="rounded-lg border px-3 py-2">
-      <textarea placeholder="Description" class="rounded-lg border px-3 py-2 resize-none" rows="3"></textarea>
-    `;
-    container.appendChild(div);
+  educationList.addEventListener("click", (e) => {
+    if (e.target.classList.contains("remove-btn")) {
+      e.target.closest(".p-4").remove();
+    }
   });
 
-  // Add Certification Entry
-  document.getElementById("addCertBtn").addEventListener("click", () => {
-    const container = document.getElementById("certList");
-    const div = document.createElement("div");
-    div.className = "grid grid-cols-1 gap-3 bg-gray-50 rounded-lg p-3";
-    div.innerHTML = `
-      <input type="text" placeholder="Certification Name" class="rounded-lg border px-3 py-2">
-      <input type="text" placeholder="Issuer" class="rounded-lg border px-3 py-2">
-    `;
-    container.appendChild(div);
-  });
-
-  // Add Custom Section
-  document.getElementById("addCustomBtn").addEventListener("click", () => {
-    const title = document.getElementById("customTitle").value.trim();
-    const details = document.getElementById("customDetails").value.trim();
-    if (!title || !details) return;
-
-    const container = document.getElementById("sections-container");
-    const div = document.createElement("div");
-    div.className = "bg-white rounded-2xl shadow p-6 section-card mb-6";
-    div.innerHTML = `
-      <h2 class="text-lg font-semibold">${title}</h2>
-      <div class="mt-4 text-sm text-gray-600">${details}</div>
-    `;
-    container.appendChild(div);
-    document.getElementById("customTitle").value = "";
-    document.getElementById("customDetails").value = "";
-  });
-
-  // Skills
-    // Skills
+  // Skills Section
   const skillCategory = document.getElementById("skillCategory");
   const skillInput = document.getElementById("skillInput");
   const skillLevel = document.getElementById("skillLevel");
   const addSkillBtn = document.getElementById("addSkillBtn");
-  const skillCards = document.getElementById("skillCards");
+  const skillTags = document.getElementById("skillTags");
 
-  // Handle suggestion chips click
-  document.querySelectorAll(".cursor-pointer").forEach((chip) => {
-    chip.addEventListener("click", () => {
-      skillInput.value = chip.textContent.trim();
-    });
-  });
+  function createSkillTag(category, skill, level) {
+    const tag = document.createElement("div");
+    tag.className =
+      "flex items-center gap-2 bg-indigo-100 text-indigo-800 text-sm px-3 py-1 rounded-full";
+    tag.innerHTML = `
+      <span class="font-medium">${category}:</span>
+      <span>${skill} (${level})</span>
+      <button class="remove-skill-btn text-indigo-500 hover:text-indigo-700">
+        &times;
+      </button>
+    `;
+    return tag;
+  }
 
-  // Add Skill
   addSkillBtn.addEventListener("click", () => {
     const category = skillCategory.value;
     const skill = skillInput.value.trim();
     const level = skillLevel.value;
 
-    if (!skill) {
-      alert("Please enter a skill.");
-      return;
+    if (skill) {
+      const newTag = createSkillTag(category, skill, level);
+      skillTags.appendChild(newTag);
+      skillInput.value = "";
     }
-
-    // Create main card container
-    const card = document.createElement("div");
-    card.className =
-      "flex items-center justify-between p-3 rounded-lg border bg-white shadow-sm";
-
-    // Left side (skill + category + level)
-    const left = document.createElement("div");
-
-    const skillName = document.createElement("p");
-    skillName.className = "font-medium";
-    skillName.textContent = skill;
-
-    const details = document.createElement("p");
-    details.className = "text-sm text-gray-500";
-    details.textContent = `${category} • ${level}`;
-
-    left.appendChild(skillName);
-    left.appendChild(details);
-
-    // Remove button
-    const removeBtn = document.createElement("button");
-    removeBtn.className =
-      "removeBtn text-red-500 hover:text-red-700 text-sm";
-    removeBtn.textContent = "Remove";
-
-    removeBtn.addEventListener("click", () => {
-      card.remove();
-    });
-
-    // Build card
-    card.appendChild(left);
-    card.appendChild(removeBtn);
-
-    // Append to container
-    skillCards.appendChild(card);
-
-    // Reset input
-    skillInput.value = "";
   });
 
+  skillTags.addEventListener("click", (e) => {
+    if (e.target.classList.contains("remove-skill-btn")) {
+      e.target.closest("div").remove();
+    }
+  });
 
+  // Projects Section
+  const projectsList = document.getElementById("projectsList");
+  const addProjectBtn = document.getElementById("addProjectBtn");
+
+  function createProjectCard() {
+    const card = document.createElement("div");
+    card.className =
+      "p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
+    card.innerHTML = `
+      <div>
+        <label class="block text-sm">Project Title</label>
+        <input type="text" placeholder="Project Title" class="mt-1 w-full px-3 py-2 border rounded-md project-title">
+      </div>
+      <div>
+        <label class="block text-sm">Technologies Used</label>
+        <input type="text" placeholder="e.g. React, Node.js, MongoDB" class="mt-1 w-full px-3 py-2 border rounded-md project-techs">
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm">Start Date</label>
+          <input type="date" class="mt-1 w-full px-3 py-2 border rounded-md project-start-date">
+        </div>
+        <div>
+          <label class="block text-sm">End Date</label>
+          <input type="date" class="mt-1 w-full px-3 py-2 border rounded-md project-end-date">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm">Description/Outcomes</label>
+        <textarea placeholder="Describe the project, your role, and key outcomes." class="mt-1 w-full px-3 py-2 border rounded-md resize-none project-description" rows="3"></textarea>
+      </div>
+      <button type="button" class="remove-btn absolute top-2 right-2 text-sm px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200">
+        Remove
+      </button>
+    `;
+    return card;
+  }
+
+  addProjectBtn.addEventListener("click", () => {
+    projectsList.appendChild(createProjectCard());
+  });
+
+  projectsList.addEventListener("click", (e) => {
+    if (e.target.classList.contains("remove-btn")) {
+      e.target.closest(".p-4").remove();
+    }
+  });
+
+  // Work Experience Section
+  const workList = document.getElementById("workList");
+  const addWorkBtn = document.getElementById("addWorkBtn");
+
+  function createWorkCard() {
+    const card = document.createElement("div");
+    card.className =
+      "p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
+    card.innerHTML = `
+      <div>
+        <label class="block text-sm">Job Title</label>
+        <input type="text" placeholder="Job Title" class="mt-1 w-full px-3 py-2 border rounded-md work-title">
+      </div>
+      <div>
+        <label class="block text-sm">Company</label>
+        <input type="text" placeholder="Company Name" class="mt-1 w-full px-3 py-2 border rounded-md work-company">
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm">Start Date</label>
+          <input type="date" class="mt-1 w-full px-3 py-2 border rounded-md work-start-date">
+        </div>
+        <div>
+          <label class="block text-sm">End Date</label>
+          <input type="date" class="mt-1 w-full px-3 py-2 border rounded-md work-end-date">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm">Achievements</label>
+        <textarea placeholder="List key achievements and responsibilities (e.g., Led a team of 5, Increased efficiency by 15%)" class="mt-1 w-full px-3 py-2 border rounded-md resize-none work-achievements" rows="3"></textarea>
+      </div>
+      <button type="button" class="remove-btn absolute top-2 right-2 text-sm px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200">
+        Remove
+      </button>
+    `;
+    return card;
+  }
+
+  addWorkBtn.addEventListener("click", () => {
+    workList.appendChild(createWorkCard());
+  });
+
+  workList.addEventListener("click", (e) => {
+    if (e.target.classList.contains("remove-btn")) {
+      e.target.closest(".p-4").remove();
+    }
+  });
+
+  // Certifications Section
+  const certList = document.getElementById("certList");
+  const addCertBtn = document.getElementById("addCertBtn");
+
+  function createCertCard() {
+    const card = document.createElement("div");
+    card.className =
+      "p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
+    card.innerHTML = `
+      <div>
+        <label class="block text-sm">Certification Name</label>
+        <input type="text" placeholder="Certification Name" class="mt-1 w-full px-3 py-2 border rounded-md cert-name">
+      </div>
+      <div>
+        <label class="block text-sm">Issuer</label>
+        <input type="text" placeholder="Issuer" class="mt-1 w-full px-3 py-2 border rounded-md cert-issuer">
+      </div>
+      <div>
+        <label class="block text-sm">Date of Issue</label>
+        <input type="date" class="mt-1 w-full px-3 py-2 border rounded-md cert-date">
+      </div>
+      <button type="button" class="remove-btn absolute top-2 right-2 text-sm px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200">
+        Remove
+      </button>
+    `;
+    return card;
+  }
+
+  addCertBtn.addEventListener("click", () => {
+    certList.appendChild(createCertCard());
+  });
+
+  certList.addEventListener("click", (e) => {
+    if (e.target.classList.contains("remove-btn")) {
+      e.target.closest(".p-4").remove();
+    }
+  });
 
   // Validations for Personal Section
   const emailInput = document.getElementById("personalEmail");

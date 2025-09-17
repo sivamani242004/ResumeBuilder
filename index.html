@@ -8,7 +8,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   </head>
   <body class="bg-gray-50 font-sans text-gray-700 min-h-screen flex">
-    <!-- Sidebar -->
     <aside class="w-64 bg-white border-r h-screen p-4 overflow-y-auto">
       <h1 class="text-xl font-bold mb-6">Resume Builder</h1>
       <nav class="space-y-2">
@@ -70,13 +69,6 @@
         </button>
         <button
           class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
-          data-target="custom"
-        >
-          <span class="icon">⭐</span>
-          <span class="label text-sm">Custom</span>
-        </button>
-        <button
-          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
           data-target="template"
         >
           <span class="icon">📄</span>
@@ -85,10 +77,8 @@
       </nav>
     </aside>
 
-    <!-- Main Content -->
     <main class="flex-1 p-6 overflow-y-auto">
       <div id="sections-container">
-        <!-- Personal Section -->
         <div
           id="section-personal"
           class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
@@ -189,7 +179,6 @@
           </form>
         </div>
 
-        <!-- Objective Section -->
         <div
           id="section-objective"
           class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
@@ -211,7 +200,6 @@
           id="section-education"
           class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
         >
-          <!-- Header -->
           <div class="flex items-center justify-between">
             <h2 class="text-lg font-semibold">Education</h2>
             <button
@@ -221,101 +209,66 @@
               Add
             </button>
           </div>
-
-          <!-- Education List -->
-          <div id="educationList" class="mt-4 space-y-3">
-            <!-- Cards will be added dynamically -->
-          </div>
+          <div id="educationList" class="mt-4 space-y-3"></div>
         </div>
 
-        <!-- Skills Section -->
-        <!-- Skills Section -->
         <div
           id="section-skills"
-          class="section-card hidden bg-white rounded-2xl shadow p-6"
+          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
         >
           <div class="flex items-center justify-between">
             <h2 class="text-lg font-semibold">Skills</h2>
-            <button
-              id="addSkillBtn"
-              type="button"
-              class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
-            >
-              Add
-            </button>
           </div>
-
-          <!-- Inputs -->
-          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <!-- Skill Category -->
-            <select id="skillCategory" class="rounded-lg border px-3 py-2">
-              <option>Programming</option>
-              <option>Web Technologies</option>
-              <option>Tools</option>
-              <option>Concepts</option>
-              <option>Database</option>
-              <option>Other</option>
-            </select>
-
-            <!-- Skill Name -->
-            <input
-              type="text"
-              id="skillInput"
-              placeholder="Enter skill"
-              class="rounded-lg border px-3 py-2"
-            />
-
-            <!-- Skill Level -->
-            <select id="skillLevel" class="rounded-lg border px-3 py-2">
-              <option>Beginner</option>
-              <option>Intermediate</option>
-              <option>Advanced</option>
-              <option>Expert</option>
-            </select>
-          </div>
-
-          <!-- Suggestions -->
-          <div class="mt-3 flex flex-wrap gap-2">
-            <span
-              class="cursor-pointer px-2 py-1 bg-gray-100 rounded-full text-sm"
-              >JavaScript</span
-            >
-            <span
-              class="cursor-pointer px-2 py-1 bg-gray-100 rounded-full text-sm"
-              >React</span
-            >
-            <span
-              class="cursor-pointer px-2 py-1 bg-gray-100 rounded-full text-sm"
-              >TailwindCSS</span
-            >
-            <span
-              class="cursor-pointer px-2 py-1 bg-gray-100 rounded-full text-sm"
-              >Node.js</span
-            >
-          </div>
-
-          <!-- Skill Cards -->
-          <div id="skillCards" class="mt-4 space-y-3">
-            <!-- Skill cards will be appended here by JS -->
+          <div class="mt-4 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <div>
+                <label class="block text-sm">Category</label>
+                <select
+                  id="skillCategory"
+                  class="mt-1 w-full rounded-lg border px-3 py-2"
+                >
+                  <option value="Programming Languages">
+                    Programming Languages
+                  </option>
+                  <option value="Web Technologies">Web Technologies</option>
+                  <option value="Frameworks / Tools">Frameworks / Tools</option>
+                  <option value="Concepts">Concepts</option>
+                  <option value="Soft Skills">Soft Skills</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-sm">Skill Name</label>
+                <input
+                  id="skillInput"
+                  class="mt-1 w-full rounded-lg border px-3 py-2"
+                  placeholder="e.g. JavaScript, Docker, Leadership"
+                />
+              </div>
+              <div>
+                <label class="block text-sm">Level</label>
+                <select
+                  id="skillLevel"
+                  class="mt-1 w-full rounded-lg border px-3 py-2"
+                >
+                  <option value="Basic">Basic</option>
+                  <option value="Intermediate">Intermediate</option>
+                  <option value="Advanced">Advanced</option>
+                </select>
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <button
+                id="addSkillBtn"
+                class="px-3 py-2 rounded bg-indigo-600 text-white"
+              >
+                Add Skill
+              </button>
+            </div>
+            <div id="skillTags" class="mt-3 flex flex-wrap gap-2"></div>
           </div>
         </div>
 
-        <!-- Display Added Skills -->
-        <div id="skillCards" class="mt-4 grid gap-3 md:grid-cols-2">
-          <!-- Example skill card -->
-          <!-- JS will add here dynamically -->
-          <!--
-    <div class="flex items-center justify-between p-3 rounded-lg border bg-white shadow-sm">
-      <div>
-        <p class="font-medium">React</p>
-        <p class="text-sm text-gray-500">Web Technologies • Intermediate</p>
-      </div>
-      <button class="text-red-500 hover:text-red-700 text-sm">Remove</button>
-    </div>
-    -->
-        </div>
-
-        <!-- Projects Section -->
         <div
           id="section-projects"
           class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
@@ -332,7 +285,6 @@
           <div id="projectsList" class="mt-4 space-y-3"></div>
         </div>
 
-        <!-- Work Section -->
         <div
           id="section-work"
           class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
@@ -349,7 +301,6 @@
           <div id="workList" class="mt-4 space-y-3"></div>
         </div>
 
-        <!-- Certifications Section -->
         <div
           id="section-certifications"
           class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
@@ -366,7 +317,6 @@
           <div id="certList" class="mt-4 space-y-3"></div>
         </div>
 
-        <!-- Activities Section -->
         <div
           id="section-activities"
           class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
@@ -383,37 +333,6 @@
           </div>
         </div>
 
-        <!-- Custom Section -->
-        <div
-          id="section-custom"
-          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
-        >
-          <h2 class="text-lg font-semibold">Custom Section</h2>
-          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <input
-              id="customTitle"
-              class="col-span-2 rounded-lg border px-3 py-2"
-              placeholder="Section title (will be added to list)"
-            />
-            <button
-              id="addCustomBtn"
-              class="rounded bg-indigo-600 text-white px-3 py-2"
-            >
-              Add
-            </button>
-          </div>
-          <div class="mt-3">
-            <textarea
-              id="customDetails"
-              oninput="autoExpandTextarea(this)"
-              class="mt-2 w-full rounded-lg border px-3 py-2 resize-none"
-              rows="3"
-              placeholder="Details..."
-            ></textarea>
-          </div>
-        </div>
-
-        <!-- Template Section -->
         <div
           id="section-template"
           class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
@@ -449,7 +368,6 @@
         </div>
       </div>
     </main>
-
     <script src="script.js"></script>
   </body>
 </html>
