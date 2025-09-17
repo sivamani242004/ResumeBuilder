@@ -199,19 +199,72 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Skills
-  document.getElementById("addSkillBtn").addEventListener("click", () => {
-    const input = document.getElementById("skillInput");
-    const value = input.value.trim();
-    if (!value) return;
+    // Skills
+  const skillCategory = document.getElementById("skillCategory");
+  const skillInput = document.getElementById("skillInput");
+  const skillLevel = document.getElementById("skillLevel");
+  const addSkillBtn = document.getElementById("addSkillBtn");
+  const skillCards = document.getElementById("skillCards");
 
-    const tag = document.createElement("span");
-    tag.className =
-      "bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs cursor-pointer";
-    tag.textContent = value;
-    tag.addEventListener("click", () => tag.remove());
-    document.getElementById("skillTags").appendChild(tag);
-    input.value = "";
+  // Handle suggestion chips click
+  document.querySelectorAll(".cursor-pointer").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      skillInput.value = chip.textContent.trim();
+    });
   });
+
+  // Add Skill
+  addSkillBtn.addEventListener("click", () => {
+    const category = skillCategory.value;
+    const skill = skillInput.value.trim();
+    const level = skillLevel.value;
+
+    if (!skill) {
+      alert("Please enter a skill.");
+      return;
+    }
+
+    // Create main card container
+    const card = document.createElement("div");
+    card.className =
+      "flex items-center justify-between p-3 rounded-lg border bg-white shadow-sm";
+
+    // Left side (skill + category + level)
+    const left = document.createElement("div");
+
+    const skillName = document.createElement("p");
+    skillName.className = "font-medium";
+    skillName.textContent = skill;
+
+    const details = document.createElement("p");
+    details.className = "text-sm text-gray-500";
+    details.textContent = `${category} • ${level}`;
+
+    left.appendChild(skillName);
+    left.appendChild(details);
+
+    // Remove button
+    const removeBtn = document.createElement("button");
+    removeBtn.className =
+      "removeBtn text-red-500 hover:text-red-700 text-sm";
+    removeBtn.textContent = "Remove";
+
+    removeBtn.addEventListener("click", () => {
+      card.remove();
+    });
+
+    // Build card
+    card.appendChild(left);
+    card.appendChild(removeBtn);
+
+    // Append to container
+    skillCards.appendChild(card);
+
+    // Reset input
+    skillInput.value = "";
+  });
+
+
 
   // Validations for Personal Section
   const emailInput = document.getElementById("personalEmail");

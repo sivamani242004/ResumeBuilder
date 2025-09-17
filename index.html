@@ -229,53 +229,90 @@
         </div>
 
         <!-- Skills Section -->
+        <!-- Skills Section -->
         <div
           id="section-skills"
-          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
+          class="section-card hidden bg-white rounded-2xl shadow p-6"
         >
           <div class="flex items-center justify-between">
             <h2 class="text-lg font-semibold">Skills</h2>
-            <div class="text-sm text-gray-500">Use dropdowns to categorize</div>
+            <button
+              id="addSkillBtn"
+              type="button"
+              class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
+            >
+              Add
+            </button>
           </div>
-          <div class="mt-4 space-y-3">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <select id="skillCategory" class="rounded-lg border px-3 py-2">
-                <option>Frontend</option>
-                <option>Backend</option>
-                <option>DevOps</option>
-                <option>Soft Skills</option>
-                <option>Other</option>
-              </select>
-              <select id="skillSub" class="rounded-lg border px-3 py-2">
-                <option>React</option>
-                <option>Angular</option>
-                <option>Node</option>
-                <option>Communication</option>
-              </select>
-              <select id="skillTool" class="rounded-lg border px-3 py-2">
-                <option>VS Code</option>
-                <option>Git</option>
-                <option>Figma</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-sm">Add custom skill</label>
-              <div class="mt-2 flex gap-2">
-                <input
-                  id="skillInput"
-                  class="flex-1 rounded-lg border px-3 py-2"
-                  placeholder="e.g. Storybook"
-                />
-                <button
-                  id="addSkillBtn"
-                  class="px-3 py-2 rounded bg-indigo-600 text-white"
-                >
-                  Add
-                </button>
-              </div>
-              <div id="skillTags" class="mt-3 flex flex-wrap gap-2"></div>
-            </div>
+
+          <!-- Inputs -->
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <!-- Skill Category -->
+            <select id="skillCategory" class="rounded-lg border px-3 py-2">
+              <option>Programming</option>
+              <option>Web Technologies</option>
+              <option>Tools</option>
+              <option>Concepts</option>
+              <option>Database</option>
+              <option>Other</option>
+            </select>
+
+            <!-- Skill Name -->
+            <input
+              type="text"
+              id="skillInput"
+              placeholder="Enter skill"
+              class="rounded-lg border px-3 py-2"
+            />
+
+            <!-- Skill Level -->
+            <select id="skillLevel" class="rounded-lg border px-3 py-2">
+              <option>Beginner</option>
+              <option>Intermediate</option>
+              <option>Advanced</option>
+              <option>Expert</option>
+            </select>
           </div>
+
+          <!-- Suggestions -->
+          <div class="mt-3 flex flex-wrap gap-2">
+            <span
+              class="cursor-pointer px-2 py-1 bg-gray-100 rounded-full text-sm"
+              >JavaScript</span
+            >
+            <span
+              class="cursor-pointer px-2 py-1 bg-gray-100 rounded-full text-sm"
+              >React</span
+            >
+            <span
+              class="cursor-pointer px-2 py-1 bg-gray-100 rounded-full text-sm"
+              >TailwindCSS</span
+            >
+            <span
+              class="cursor-pointer px-2 py-1 bg-gray-100 rounded-full text-sm"
+              >Node.js</span
+            >
+          </div>
+
+          <!-- Skill Cards -->
+          <div id="skillCards" class="mt-4 space-y-3">
+            <!-- Skill cards will be appended here by JS -->
+          </div>
+        </div>
+
+        <!-- Display Added Skills -->
+        <div id="skillCards" class="mt-4 grid gap-3 md:grid-cols-2">
+          <!-- Example skill card -->
+          <!-- JS will add here dynamically -->
+          <!--
+    <div class="flex items-center justify-between p-3 rounded-lg border bg-white shadow-sm">
+      <div>
+        <p class="font-medium">React</p>
+        <p class="text-sm text-gray-500">Web Technologies • Intermediate</p>
+      </div>
+      <button class="text-red-500 hover:text-red-700 text-sm">Remove</button>
+    </div>
+    -->
         </div>
 
         <!-- Projects Section -->
