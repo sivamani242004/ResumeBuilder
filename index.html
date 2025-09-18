@@ -1,120 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Resume Builder</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Resume Builder — Tailwind</title>
+
+    <!-- small Tailwind config for colors/shadows used in the design -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              accent: "#7b63ff",
+              accent2: "#566dff",
+              brandgreen: "#18b169",
+              muted: "#98a6b8",
+            },
+            boxShadow: {
+              "soft-lg": "0 18px 30px rgba(14,25,49,0.06)",
+              "soft-md": "0 8px 20px rgba(14,25,49,0.04)",
+            },
+            borderRadius: {
+              xl2: "12px",
+            },
+          },
+        },
+      };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- keep your jsPDF include if needed -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   </head>
-  <body class="bg-gray-50 font-sans text-gray-700 min-h-screen flex">
-    <aside class="w-64 bg-white border-r h-screen p-4 overflow-y-auto">
-      <h1 class="text-xl font-bold mb-6">Resume Builder</h1>
-      <nav class="space-y-2">
-        <button
-          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
-          data-target="personal"
-        >
-          <span class="icon">👤</span>
-          <span class="label text-sm">Personal</span>
-        </button>
-        <button
-          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
-          data-target="objective"
-        >
-          <span class="icon">🎯</span>
-          <span class="label text-sm">Objective</span>
-        </button>
-        <button
-          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
-          data-target="education"
-        >
-          <span class="icon">🎓</span>
-          <span class="label text-sm">Education</span>
-        </button>
-        <button
-          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
-          data-target="skills"
-        >
-          <span class="icon">💡</span>
-          <span class="label text-sm">Skills</span>
-        </button>
-        <button
-          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
-          data-target="projects"
-        >
-          <span class="icon">📂</span>
-          <span class="label text-sm">Projects</span>
-        </button>
-        <button
-          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
-          data-target="work"
-        >
-          <span class="icon">💼</span>
-          <span class="label text-sm">Work</span>
-        </button>
-        <button
-          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
-          data-target="certifications"
-        >
-          <span class="icon">📜</span>
-          <span class="label text-sm">Certifications</span>
-        </button>
-        <button
-          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
-          data-target="activities"
-        >
-          <span class="icon">🏃</span>
-          <span class="label text-sm">Activities</span>
-        </button>
-        <button
-          class="flex items-center gap-3 w-full hover:bg-indigo-100 rounded cursor-pointer px-3 py-2 section-button"
-          data-target="template"
-        >
-          <span class="icon">📄</span>
-          <span class="label text-sm">Template</span>
-        </button>
-      </nav>
-    </aside>
-
-    <main class="flex-1 p-6 overflow-y-auto">
-      <div id="sections-container">
-        <div
-          id="section-personal"
-          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
-        >
-          <h2 class="text-lg font-semibold">Personal</h2>
-          <form
-            id="form-personal"
-            class="mt-4 space-y-4"
-            onsubmit="return false"
+  <body
+    class="min-h-screen bg-gradient-to-b from-[#f7fbff] to-[#f5f8fb] font-sans text-slate-800"
+  >
+    <div class="flex">
+      <!-- Sidebar -->
+      <aside
+        class="fixed left-0 top-0 bottom-0 w-64 bg-gradient-to-b from-white to-[#fbfdff] border-r border-gray-100 p-6"
+      >
+        <div class="flex items-center gap-3 mb-6">
+          <div
+            class="w-11 h-11 rounded-lg flex items-center justify-center text-white font-bold"
+            style="background: linear-gradient(135deg, #7b63ff, #566dff)"
           >
-            <div class="flex items-center gap-4">
-              <div class="avatar-wrap" id="avatarPreview">
-                <span class="text-xs text-gray-500">No photo</span>
+            RS
+          </div>
+          <div>
+            <div class="font-semibold">Resume Builder</div>
+            <div class="text-sm text-[var(--muted,#98a6b8)]">
+              Professional Resume Builder
+            </div>
+          </div>
+        </div>
+
+        <nav class="flex flex-col gap-2 text-sm">
+          <button
+            class="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-[rgba(123,99,255,0.08)] to-[rgba(86,109,255,0.04)] shadow-[0_6px_18px_rgba(86,109,255,0.04)] font-medium section-button"
+            data-target="personal"
+          >
+            <span>👤</span><span>Personal</span>
+          </button>
+          <button
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
+            data-target="objective"
+          >
+            <span>🎯</span><span>Objective</span>
+          </button>
+          <button
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
+            data-target="education"
+          >
+            <span>🎓</span><span>Education</span>
+          </button>
+          <button
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
+            data-target="skills"
+          >
+            <span>💡</span><span>Skills</span>
+          </button>
+          <button
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
+            data-target="projects"
+          >
+            <span>📂</span><span>Projects</span>
+          </button>
+          <button
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
+            data-target="work"
+          >
+            <span>💼</span><span>Work</span>
+          </button>
+          <button
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
+            data-target="certifications"
+          >
+            <span>📜</span><span>Certifications</span>
+          </button>
+          <button
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
+            data-target="activities"
+          >
+            <span>🏃</span><span>Activities</span>
+          </button>
+          <button
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
+            data-target="template"
+          >
+            <span>📄</span><span>Template</span>
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Main -->
+      <main class="flex-1 ml-64 p-8 overflow-y-auto">
+        <header class="mb-6">
+          <h1 class="text-4xl md:text-[48px] font-extrabold text-accent">
+            Build Your Resume
+          </h1>
+          <p class="text-sm text-[var(--muted,#98a6b8)] mt-2">
+            Create a professional resume in minutes
+          </p>
+        </header>
+
+        <div id="sections-container">
+          <!-- PERSONAL -->
+          <section
+            id="section-personal"
+            class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
+          >
+            <div class="flex items-start justify-between">
+              <div>
+                <h2 class="text-lg font-semibold">Personal</h2>
+                <p class="text-sm text-[var(--muted,#98a6b8)] mt-1">
+                  Tell us about yourself
+                </p>
               </div>
-              <div class="flex-1">
-                <label class="block text-sm"
-                  >Full name <span class="required-star">*</span></label
+            </div>
+
+            <form
+              id="form-personal"
+              class="mt-6 grid gap-6 md:grid-cols-[240px_1fr]"
+              onsubmit="return false"
+            >
+              <div class="flex flex-col items-center">
+                <div
+                  id="avatarPreview"
+                  class="w-28 h-28 rounded-full bg-gradient-to-b from-[#f0f4ff] to-white flex items-center justify-center shadow-soft-lg text-3xl"
                 >
+                  👤
+                </div>
+                <label
+                  class="mt-3 inline-block px-4 py-2 rounded-lg text-white"
+                  style="
+                    background: linear-gradient(90deg, #7b63ff, #566dff);
+                    cursor: pointer;
+                  "
+                >
+                  Upload Photo
+                  <input
+                    id="profileUpload"
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                  />
+                </label>
+              </div>
+
+              <div>
                 <input
-                  required
                   name="fullname"
-                  class="mt-1 w-full rounded-lg border px-3 py-2"
-                  placeholder="Your full name"
+                  placeholder="Full name *"
+                  required
+                  class="w-full rounded-lg border border-gray-200 bg-slate-50 p-3 mb-4"
                 />
-                <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <label class="block text-sm"
-                      >Email <span class="required-star">*</span></label
+                      >Email <span class="text-red-500">*</span></label
                     >
                     <input
-                      required
-                      name="email"
                       id="personalEmail"
+                      name="email"
                       type="email"
-                      class="mt-1 w-full rounded-lg border px-3 py-2"
+                      required
                       placeholder="yourname@gmail.com"
+                      class="mt-1 w-full rounded-lg border border-gray-200 bg-slate-50 p-3"
                     />
                     <p id="emailErr" class="text-xs text-red-500 mt-1 hidden">
                       Email must end with @gmail.com
@@ -122,30 +194,31 @@
                   </div>
                   <div>
                     <label class="block text-sm"
-                      >Phone <span class="required-star">*</span></label
+                      >Phone <span class="text-red-500">*</span></label
                     >
                     <input
-                      required
-                      name="phone"
                       id="personalPhone"
+                      name="phone"
                       type="tel"
-                      class="mt-1 w-full rounded-lg border px-3 py-2"
+                      required
                       placeholder="9312345678"
+                      class="mt-1 w-full rounded-lg border border-gray-200 bg-slate-50 p-3"
                     />
                     <p id="phoneErr" class="text-xs text-red-500 mt-1 hidden">
                       Phone must be numeric and cannot start with 0
                     </p>
                   </div>
                 </div>
-                <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
                   <div>
                     <label class="block text-sm">LinkedIn URL</label>
                     <input
-                      name="linkedin"
                       id="linkedinInput"
+                      name="linkedin"
                       type="url"
-                      class="mt-1 w-full rounded-lg border px-3 py-2"
                       placeholder="https://www.linkedin.com/in/yourname"
+                      class="mt-1 w-full rounded-lg border border-gray-200 bg-slate-50 p-3"
                     />
                     <p id="liErr" class="text-xs text-red-500 mt-1 hidden">
                       Enter a valid URL
@@ -154,220 +227,248 @@
                   <div>
                     <label class="block text-sm">GitHub URL</label>
                     <input
-                      name="github"
                       id="githubInput"
+                      name="github"
                       type="url"
-                      class="mt-1 w-full rounded-lg border px-3 py-2"
                       placeholder="https://github.com/yourname"
+                      class="mt-1 w-full rounded-lg border border-gray-200 bg-slate-50 p-3"
                     />
                     <p id="gitErr" class="text-xs text-red-500 mt-1 hidden">
                       Enter a valid URL
                     </p>
                   </div>
                 </div>
-                <div class="mt-3 flex items-center gap-3">
-                  <label class="block text-sm w-28">Profile photo</label>
-                  <div>
-                    <input type="file" id="profileUpload" accept="image/*" />
-                    <p class="text-xs text-gray-500 mt-1">
-                      PNG/JPG. Shown inside a circle.
-                    </p>
-                  </div>
-                </div>
               </div>
-            </div>
-          </form>
-        </div>
+            </form>
+          </section>
 
-        <div
-          id="section-objective"
-          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
-        >
-          <h2 class="text-lg font-semibold">Objective</h2>
-          <div class="mt-4">
-            <label class="text-sm">Summary</label>
+          <!-- OBJECTIVE -->
+          <section
+            id="section-objective"
+            class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
+          >
+            <h2 class="text-lg font-semibold">Objective</h2>
+            <label class="text-sm mt-3 block">Summary</label>
             <textarea
               id="objectiveText"
               oninput="autoExpandTextarea(this)"
-              class="mt-2 w-full rounded-lg border px-3 py-2 resize-none"
-              placeholder="Write a short objective..."
               rows="3"
+              class="mt-2 w-full rounded-lg border border-gray-200 p-3 resize-none"
+              placeholder="Write a short objective..."
             ></textarea>
-          </div>
-        </div>
+          </section>
 
-        <div
-          id="section-education"
-          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
-        >
-          <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold">Education</h2>
-            <button
-              id="addEducationBtn"
-              class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
-            >
-              Add
-            </button>
-          </div>
-          <div id="educationList" class="mt-4 space-y-3"></div>
-        </div>
-
-        <div
-          id="section-skills"
-          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
-        >
-          <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold">Skills</h2>
-          </div>
-          <div class="mt-4 space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-              <div>
-                <label class="block text-sm">Category</label>
-                <select
-                  id="skillCategory"
-                  class="mt-1 w-full rounded-lg border px-3 py-2"
-                >
-                  <option value="Programming Languages">
-                    Programming Languages
-                  </option>
-                  <option value="Web Technologies">Web Technologies</option>
-                  <option value="Frameworks / Tools">Frameworks / Tools</option>
-                  <option value="Concepts">Concepts</option>
-                  <option value="Soft Skills">Soft Skills</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-              <div class="md:col-span-2">
-                <label class="block text-sm">Skill Name</label>
-                <input
-                  id="skillInput"
-                  class="mt-1 w-full rounded-lg border px-3 py-2"
-                  placeholder="e.g. JavaScript, Docker, Leadership"
-                />
-              </div>
-              <div>
-                <label class="block text-sm">Level</label>
-                <select
-                  id="skillLevel"
-                  class="mt-1 w-full rounded-lg border px-3 py-2"
-                >
-                  <option value="Basic">Basic</option>
-                  <option value="Intermediate">Intermediate</option>
-                  <option value="Advanced">Advanced</option>
-                </select>
-              </div>
-            </div>
-            <div class="flex justify-end">
+          <!-- EDUCATION -->
+          <section
+            id="section-education"
+            class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
+          >
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg font-semibold">Education</h2>
               <button
-                id="addSkillBtn"
-                class="px-3 py-2 rounded bg-indigo-600 text-white"
+                id="addEducationBtn"
+                class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
               >
-                Add Skill
+                Add
               </button>
             </div>
-            <div id="skillTags" class="mt-3 flex flex-wrap gap-2"></div>
-          </div>
-        </div>
+            <div id="educationList" class="mt-4 space-y-3"></div>
+          </section>
 
-        <div
-          id="section-projects"
-          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
-        >
-          <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold">Projects</h2>
-            <button
-              id="addProjectBtn"
-              class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
+          <!-- SKILLS -->
+          <section
+            id="section-skills"
+            class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
+          >
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg font-semibold">Skills</h2>
+            </div>
+
+            <div class="mt-4 space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div>
+                  <label class="block text-sm">Category</label>
+                  <select
+                    id="skillCategory"
+                    class="mt-1 w-full rounded-lg border border-gray-200 p-3"
+                  >
+                    <option>Programming Languages</option>
+                    <option>Web Technologies</option>
+                    <option>Frameworks / Tools</option>
+                    <option>Concepts</option>
+                    <option>Soft Skills</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+
+                <div class="md:col-span-2">
+                  <label class="block text-sm">Skill Name</label>
+                  <input
+                    id="skillInput"
+                    placeholder="e.g. JavaScript, Docker, Leadership"
+                    class="mt-1 w-full rounded-lg border border-gray-200 p-3"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-sm">Level</label>
+                  <select
+                    id="skillLevel"
+                    class="mt-1 w-full rounded-lg border border-gray-200 p-3"
+                  >
+                    <option>Basic</option>
+                    <option selected>Intermediate</option>
+                    <option>Advanced</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="flex justify-end">
+                <button
+                  id="addSkillBtn"
+                  class="px-3 py-2 rounded bg-gradient-to-r from-[#8b63ff] to-[#7b63ff] text-white"
+                >
+                  Add Skill
+                </button>
+              </div>
+
+              <div id="skillTags" class="mt-3 flex flex-wrap gap-2"></div>
+            </div>
+          </section>
+
+          <!-- PROJECTS -->
+          <section
+            id="section-projects"
+            class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
+          >
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg font-semibold">Projects</h2>
+              <button
+                id="addProjectBtn"
+                class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
+              >
+                Add Project
+              </button>
+            </div>
+            <div id="projectsList" class="mt-4 space-y-3"></div>
+          </section>
+
+          <!-- WORK -->
+          <section
+            id="section-work"
+            class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
+          >
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg font-semibold">Work Experience</h2>
+              <button
+                id="addWorkBtn"
+                class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
+              >
+                Add New
+              </button>
+            </div>
+            <div id="workList" class="mt-4 space-y-3"></div>
+          </section>
+
+          <!-- CERTIFICATIONS -->
+          <section
+            id="section-certifications"
+            class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
+          >
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg font-semibold">Certifications</h2>
+              <button
+                id="addCertBtn"
+                class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
+              >
+                Add New
+              </button>
+            </div>
+            <div id="certList" class="mt-4 space-y-3"></div>
+          </section>
+
+          <!-- ACTIVITIES -->
+          <section
+            id="section-activities"
+            class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
+          >
+            <h2 class="text-lg font-semibold">Activities</h2>
+            <label class="text-sm mt-3 block"
+              >Extracurricular / Volunteering</label
             >
-              Add Project
-            </button>
-          </div>
-          <div id="projectsList" class="mt-4 space-y-3"></div>
-        </div>
-
-        <div
-          id="section-work"
-          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
-        >
-          <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold">Work Experience</h2>
-            <button
-              id="addWorkBtn"
-              class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
-            >
-              Add New
-            </button>
-          </div>
-          <div id="workList" class="mt-4 space-y-3"></div>
-        </div>
-
-        <div
-          id="section-certifications"
-          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
-        >
-          <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold">Certifications</h2>
-            <button
-              id="addCertBtn"
-              class="text-sm px-3 py-1 rounded bg-indigo-50 text-indigo-600"
-            >
-              Add New
-            </button>
-          </div>
-          <div id="certList" class="mt-4 space-y-3"></div>
-        </div>
-
-        <div
-          id="section-activities"
-          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
-        >
-          <h2 class="text-lg font-semibold">Activities</h2>
-          <div class="mt-4">
-            <label class="text-sm">Extracurricular / Volunteering</label>
             <textarea
               id="activitiesText"
               oninput="autoExpandTextarea(this)"
-              class="mt-2 w-full rounded-lg border px-3 py-2 resize-none"
               rows="3"
+              class="mt-2 w-full rounded-lg border border-gray-200 p-3 resize-none"
             ></textarea>
-          </div>
-        </div>
+          </section>
 
-        <div
-          id="section-template"
-          class="bg-white rounded-2xl shadow p-6 section-card mb-6 hidden"
-        >
-          <h2 class="text-lg font-semibold">Template & Export</h2>
-          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <select id="templateSelect" class="rounded-lg border px-3 py-2">
-              <option>Classic</option>
-              <option>Modern</option>
-              <option>Elegant</option>
-            </select>
-            <div>
-              <label class="text-sm">Margins (px)</label>
-              <input
-                id="marginInput"
-                type="number"
-                value="20"
-                class="mt-1 rounded-lg border px-3 py-2"
-              />
-            </div>
-            <div class="flex items-end gap-2">
-              <button
-                id="exportPdfBtn"
-                class="px-3 py-2 rounded bg-indigo-600 text-white"
+          <!-- TEMPLATE & EXPORT -->
+          <section
+            id="section-template"
+            class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
+          >
+            <h2 class="text-lg font-semibold">Template & Export</h2>
+
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+              <select
+                id="templateSelect"
+                class="rounded-lg border border-gray-200 px-3 py-2"
               >
-                Export PDF
-              </button>
-              <button id="exportTxtBtn" class="px-3 py-2 rounded border">
-                Export TXT
-              </button>
+                <option>Classic</option>
+                <option selected>Modern</option>
+                <option>Elegant</option>
+              </select>
+
+              <div>
+                <label class="text-sm">Margins (px)</label>
+                <input
+                  id="marginInput"
+                  type="number"
+                  value="20"
+                  class="mt-1 rounded-lg border border-gray-200 px-3 py-2"
+                />
+              </div>
+
+              <div class="flex items-end gap-2">
+                <button
+                  id="exportPdfBtn"
+                  class="px-3 py-2 rounded bg-gradient-to-r from-[#7b63ff] to-[#566dff] text-white"
+                >
+                  Export PDF
+                </button>
+                <button
+                  id="exportTxtBtn"
+                  class="px-3 py-2 rounded border border-gray-200"
+                >
+                  Export TXT
+                </button>
+              </div>
             </div>
-          </div>
+          </section>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
+
+    <!-- Keep your script.js — it can wire navigation, validation, export, etc. -->
     <script src="script.js"></script>
+
+    <!-- tiny helper to show first tab on load if script.js doesn't do it -->
+    <script>
+      (function showDefault() {
+        const firstBtn = document.querySelector(
+          '.section-button[data-target="personal"]'
+        );
+        if (firstBtn) {
+          const target = firstBtn.getAttribute("data-target");
+          document
+            .querySelectorAll(".section-card")
+            .forEach((s) => s.classList.add("hidden"));
+          const el = document.getElementById("section-" + target);
+          if (el) el.classList.remove("hidden");
+        }
+      })();
+    </script>
   </body>
 </html>
