@@ -81,17 +81,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  document.getElementById("profileUpload").addEventListener("change", function () {
-    const preview = document.getElementById("avatarPreview");
-    preview.innerHTML = "";
+  /** ---------------------- Profile Photo ---------------------- **/
+  const profileUpload = document.getElementById("profileUpload");
+  const avatarPreview = document.getElementById("avatarPreview");
+  const previewContent = document.getElementById("previewContent");
+
+  // Initialize live preview photo and placeholder
+  let livePhoto = document.createElement("img");
+  livePhoto.id = "previewPhoto";
+  livePhoto.className = "w-24 h-24 rounded-full object-cover mb-2";
+  livePhoto.style.display = "none";
+  previewContent.prepend(livePhoto);
+
+  let livePhotoPlaceholder = document.createElement("div");
+  livePhotoPlaceholder.id = "previewPhotoPlaceholder";
+  livePhotoPlaceholder.className = "w-24 h-24 rounded-full flex items-center justify-center text-4xl bg-[#f0f4ff] mb-2";
+  livePhotoPlaceholder.textContent = "👤";
+  previewContent.prepend(livePhotoPlaceholder);
+
+  profileUpload.addEventListener("change", function () {
+    avatarPreview.innerHTML = "";
     const file = this.files[0];
     if (file && file.type.startsWith("image/")) {
+      // Update sidebar
       const img = document.createElement("img");
       img.src = URL.createObjectURL(file);
-      img.className = "w-20 h-20 rounded-full object-cover";
-      preview.appendChild(img);
+      img.className = "w-28 h-28 rounded-full object-cover";
+      avatarPreview.appendChild(img);
+
+      // Update live preview
+      livePhoto.src = URL.createObjectURL(file);
+      livePhoto.style.display = "block";
+      livePhotoPlaceholder.style.display = "none";
     } else {
-      preview.textContent = "No photo";
+      avatarPreview.textContent = "No photo";
+      livePhoto.style.display = "none";
+      livePhotoPlaceholder.style.display = "flex";
     }
   });
 
@@ -367,10 +392,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /** ---------------------- Live Preview Updates ---------------------- **/
-
-  
-  const previewContent = document.getElementById("previewContent");
-
   const previewEducation = document.createElement("ul");
   previewEducation.id = "preview-education";
   previewEducation.className = "text-sm list-disc ml-5 mt-1";
