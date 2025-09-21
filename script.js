@@ -1,37 +1,162 @@
-// script.js
-
 document.addEventListener("DOMContentLoaded", () => {
-  // Section Navigation
+  
+  
+  /** ---------------------- Section Navigation ---------------------- **/
   const sectionButtons = document.querySelectorAll(".section-button");
   const sections = document.querySelectorAll(".section-card");
 
-  // Show the first section by default
-  document.getElementById("section-personal").classList.remove("hidden");
+  function showSection(targetId) {
+    sections.forEach(s => s.classList.add("hidden"));
+    const el = document.getElementById(`section-${targetId}`);
+    if (el) el.classList.remove("hidden");
+  }
 
-  sectionButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const targetId = btn.getAttribute("data-target");
-      sections.forEach((section) => {
-        section.classList.add("hidden");
-      });
-      document.getElementById(`section-${targetId}`).classList.remove("hidden");
-    });
+  sectionButtons.forEach(btn => {
+    btn.addEventListener("click", () => showSection(btn.getAttribute("data-target")));
   });
 
-  // Auto-expand textareas
-  window.autoExpandTextarea = function (textarea) {
+  // Show default section
+  showSection("personal");
+
+  /** ---------------------- Auto-expand Textareas ---------------------- **/
+  window.autoExpandTextarea = function(textarea) {
     textarea.style.height = "auto";
     textarea.style.height = textarea.scrollHeight + "px";
   };
 
-  // Education Section
+  /** ---------------------- Personal Info ---------------------- **/
+  const fullnameInput = document.querySelector('input[name="fullname"]');
+  const emailInput = document.getElementById("personalEmail");
+  const phoneInput = document.getElementById("personalPhone");
+  const liInput = document.getElementById("linkedinInput");
+  const gitInput = document.getElementById("githubInput");
+
+  const previewName = document.getElementById("previewName");
+  const previewEmail = document.getElementById("previewEmail");
+  const previewPhone = document.getElementById("previewPhone");
+  const previewLinkedIn = document.getElementById("previewLinkedIn");
+  const previewGitHub = document.getElementById("previewGitHub");
+  const previewObjective = document.getElementById("previewObjective");
+  const previewActivities = document.getElementById("previewActivities");
+  const previewSkills = document.getElementById("previewSkills");
+
+  function updatePersonalPreview() {
+    previewName.textContent = fullnameInput.value || "---";
+    previewEmail.textContent = emailInput.value || "---";
+    previewPhone.textContent = phoneInput.value || "---";
+    previewLinkedIn.textContent = liInput.value || "---";
+    previewGitHub.textContent = gitInput.value || "---";
+  }
+
+  [fullnameInput, emailInput, phoneInput, liInput, gitInput].forEach(input => {
+    input.addEventListener("input", updatePersonalPreview);
+  });
+
+  emailInput.addEventListener("input", () => {
+    const err = document.getElementById("emailErr");
+    err.classList.toggle("hidden", !emailInput.value || emailInput.value.endsWith("@gmail.com"));
+  });
+
+  phoneInput.addEventListener("input", () => {
+    const err = document.getElementById("phoneErr");
+    err.classList.toggle("hidden", /^[1-9][0-9]{9}$/.test(phoneInput.value.trim()));
+  });
+
+  liInput.addEventListener("input", () => {
+    const err = document.getElementById("liErr");
+    try {
+      const url = new URL(liInput.value);
+      err.classList.toggle("hidden", url.hostname.includes("linkedin.com"));
+    } catch {
+      err.classList.remove("hidden");
+    }
+  });
+
+  gitInput.addEventListener("input", () => {
+    const err = document.getElementById("gitErr");
+    try {
+      const url = new URL(gitInput.value);
+      err.classList.toggle("hidden", url.hostname.includes("github.com"));
+    } catch {
+      err.classList.remove("hidden");
+    }
+  });
+
+  document.getElementById("profileUpload").addEventListener("change", function () {
+    const preview = document.getElementById("avatarPreview");
+    preview.innerHTML = "";
+    const file = this.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(file);
+      img.className = "w-20 h-20 rounded-full object-cover";
+      preview.appendChild(img);
+    } else {
+      preview.textContent = "No photo";
+    }
+  });
+
+  /** ---------------------- Objective & Activities ---------------------- **/
+  const objectiveInput = document.getElementById("objectiveText");
+  objectiveInput.addEventListener("input", () => {
+    previewObjective.textContent = objectiveInput.value || "---";
+  });
+
+  const activitiesInput = document.getElementById("activitiesText");
+  activitiesInput.addEventListener("input", () => {
+    previewActivities.textContent = activitiesInput.value || "---";
+  });
+
+  /** ---------------------- Skills ---------------------- **/
+  const skillCategory = document.getElementById("skillCategory");
+  const skillInput = document.getElementById("skillInput");
+  const skillLevel = document.getElementById("skillLevel");
+  const addSkillBtn = document.getElementById("addSkillBtn");
+  const skillTags = document.getElementById("skillTags");
+
+  function createSkillTag(category, skill, level) {
+    const tag = document.createElement("div");
+    tag.className = "flex items-center gap-2 bg-indigo-100 text-indigo-800 text-sm px-3 py-1 rounded-full";
+    tag.innerHTML = `<span class="font-medium">${category}:</span> <span>${skill} (${level})</span> <button class="remove-skill-btn text-indigo-500 hover:text-indigo-700">&times;</button>`;
+    return tag;
+  }
+
+  function updateSkillsPreview() {
+    previewSkills.innerHTML = "";
+    skillTags.querySelectorAll("div").forEach(tag => {
+      const clone = tag.cloneNode(true);
+      clone.querySelector("button")?.remove();
+      previewSkills.appendChild(clone);
+    });
+  }
+
+  addSkillBtn.addEventListener("click", () => {
+    const category = skillCategory.value;
+    const skill = skillInput.value.trim();
+    const level = skillLevel.value;
+    if (!skill) return;
+    skillTags.appendChild(createSkillTag(category, skill, level));
+    skillInput.value = "";
+    updateSkillsPreview();
+  });
+
+  skillTags.addEventListener("click", (e) => {
+    if (e.target.classList.contains("remove-skill-btn")) {
+      e.target.closest("div").remove();
+      updateSkillsPreview();
+    }
+  });
+
+ /** ---------------------- Education, Projects, Work, Certifications ---------------------- **/
+
+  /** ---------------------- Education Section ---------------------- **/
   const educationList = document.getElementById("educationList");
   const addEducationBtn = document.getElementById("addEducationBtn");
+  const previewEducation = document.getElementById("preview-education");
 
   function createEducationCard() {
     const card = document.createElement("div");
-    card.className =
-      "p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
+    card.className = "p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
     card.innerHTML = `
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
@@ -73,71 +198,53 @@ document.addEventListener("DOMContentLoaded", () => {
         <label class="block text-sm">Grade/Score</label>
         <input type="text" placeholder="Grade/Score" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-indigo-400 focus:border-indigo-400 education-grade">
       </div>
-      <button type="button" class="remove-btn absolute top-2 right-2 text-sm px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200">
-        Remove
-      </button>
+      <button type="button" class="remove-btn absolute top-2 right-2 text-sm px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200">Remove</button>
     `;
     return card;
+  }
+
+  function updateEducationPreview() {
+    previewEducation.innerHTML = "";
+    educationList.querySelectorAll(".p-4").forEach(card => {
+      const qual = card.querySelector(".education-qualification").value;
+      const customQual = card.querySelector(".education-custom-qualification").value;
+      const college = card.querySelector(".education-college").value;
+      const location = card.querySelector(".education-location").value;
+      const start = card.querySelector(".education-start-date").value;
+      const end = card.querySelector(".education-end-date").value;
+      const grade = card.querySelector(".education-grade").value;
+
+      const li = document.createElement("li");
+      li.textContent = `${qual === "Others" ? customQual : qual} | ${college} | ${location} | ${start} - ${end} | ${grade}`;
+      previewEducation.appendChild(li);
+    });
   }
 
   addEducationBtn.addEventListener("click", () => {
     const newCard = createEducationCard();
     educationList.appendChild(newCard);
+
     const select = newCard.querySelector(".education-qualification");
-    const customInput = newCard.querySelector(
-      ".education-custom-qualification"
-    );
+    const customInput = newCard.querySelector(".education-custom-qualification");
+
     select.addEventListener("change", () => {
       customInput.classList.toggle("hidden", select.value !== "Others");
+      updateEducationPreview();
     });
+
+    newCard.querySelectorAll("input").forEach(input => {
+      input.addEventListener("input", updateEducationPreview);
+    });
+
+    newCard.querySelector(".remove-btn").addEventListener("click", () => {
+      newCard.remove();
+      updateEducationPreview();
+    });
+
+    updateEducationPreview();
   });
 
-  educationList.addEventListener("click", (e) => {
-    if (e.target.classList.contains("remove-btn")) {
-      e.target.closest(".p-4").remove();
-    }
-  });
-
-  // Skills Section
-  const skillCategory = document.getElementById("skillCategory");
-  const skillInput = document.getElementById("skillInput");
-  const skillLevel = document.getElementById("skillLevel");
-  const addSkillBtn = document.getElementById("addSkillBtn");
-  const skillTags = document.getElementById("skillTags");
-
-  function createSkillTag(category, skill, level) {
-    const tag = document.createElement("div");
-    tag.className =
-      "flex items-center gap-2 bg-indigo-100 text-indigo-800 text-sm px-3 py-1 rounded-full";
-    tag.innerHTML = `
-      <span class="font-medium">${category}:</span>
-      <span>${skill} (${level})</span>
-      <button class="remove-skill-btn text-indigo-500 hover:text-indigo-700">
-        &times;
-      </button>
-    `;
-    return tag;
-  }
-
-  addSkillBtn.addEventListener("click", () => {
-    const category = skillCategory.value;
-    const skill = skillInput.value.trim();
-    const level = skillLevel.value;
-
-    if (skill) {
-      const newTag = createSkillTag(category, skill, level);
-      skillTags.appendChild(newTag);
-      skillInput.value = "";
-    }
-  });
-
-  skillTags.addEventListener("click", (e) => {
-    if (e.target.classList.contains("remove-skill-btn")) {
-      e.target.closest("div").remove();
-    }
-  });
-
-  // Projects Section
+// Projects Section
   const projectsList = document.getElementById("projectsList");
   const addProjectBtn = document.getElementById("addProjectBtn");
 
@@ -185,7 +292,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Work Experience Section
+
+// Work Experience Section
   const workList = document.getElementById("workList");
   const addWorkBtn = document.getElementById("addWorkBtn");
 
@@ -233,7 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Certifications Section
+// Certifications Section
   const certList = document.getElementById("certList");
   const addCertBtn = document.getElementById("addCertBtn");
 
@@ -271,85 +379,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Validations for Personal Section
-  const emailInput = document.getElementById("personalEmail");
-  const phoneInput = document.getElementById("personalPhone");
-  const liInput = document.getElementById("linkedinInput");
-  const gitInput = document.getElementById("githubInput");
-
-  emailInput.addEventListener("input", () => {
-    const err = document.getElementById("emailErr");
-    err.classList.toggle(
-      "hidden",
-      !emailInput.value || emailInput.value.endsWith("@gmail.com")
-    );
-  });
-
-  phoneInput.addEventListener("input", () => {
-    const err = document.getElementById("phoneErr");
-    const val = phoneInput.value.trim();
-    err.classList.toggle("hidden", /^[1-9][0-9]{9}$/.test(val));
-  });
-
-  liInput.addEventListener("input", () => {
-    const err = document.getElementById("liErr");
-    try {
-      const url = new URL(liInput.value);
-      err.classList.toggle("hidden", url.hostname.includes("linkedin.com"));
-    } catch {
-      err.classList.remove("hidden");
-    }
-  });
-
-  gitInput.addEventListener("input", () => {
-    const err = document.getElementById("gitErr");
-    try {
-      const url = new URL(gitInput.value);
-      err.classList.toggle("hidden", url.hostname.includes("github.com"));
-    } catch {
-      err.classList.remove("hidden");
-    }
-  });
-
-  // Profile Upload Preview
-  document
-    .getElementById("profileUpload")
-    .addEventListener("change", function () {
-      const preview = document.getElementById("avatarPreview");
-      preview.innerHTML = "";
-      const file = this.files[0];
-      if (file && file.type.startsWith("image/")) {
-        const img = document.createElement("img");
-        img.src = URL.createObjectURL(file);
-        img.className = "w-20 h-20 rounded-full object-cover";
-        preview.appendChild(img);
-      } else {
-        preview.textContent = "No photo";
-      }
-    });
-
-  // Export PDF using jsPDF
-  document.getElementById("exportPdfBtn").addEventListener("click", () => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.text("Resume Export PDF", 10, 10);
-    doc.save("resume.pdf");
-  });
-
-  // Export TXT
-  document.getElementById("exportTxtBtn").addEventListener("click", () => {
-    let content = "Resume Export TXT\n\n";
-    content += `Name: ${
-      document.querySelector('input[name="fullname"]').value
-    }\n`;
-    content += `Email: ${emailInput.value}\n`;
-    content += `Phone: ${phoneInput.value}\n`;
-    content += `LinkedIn: ${liInput.value}\n`;
-    content += `GitHub: ${gitInput.value}\n`;
-    const blob = new Blob([content], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "resume.txt";
-    link.click();
-  });
 });
