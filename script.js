@@ -9,11 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (el) el.classList.remove("hidden");
   }
 
-  sectionButtons.forEach((btn) => {
+  sectionButtons.forEach((btn) =>
     btn.addEventListener("click", () =>
       showSection(btn.getAttribute("data-target"))
-    );
-  });
+    )
+  );
 
   showSection("personal");
 
@@ -35,8 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const previewPhone = document.getElementById("previewPhone");
   const previewLinkedIn = document.getElementById("previewLinkedIn");
   const previewGitHub = document.getElementById("previewGitHub");
-  const previewObjective = document.getElementById("previewObjective");
-  const previewActivities = document.getElementById("previewActivities");
 
   function updatePersonalPreview() {
     previewName.textContent = fullnameInput.value || "---";
@@ -49,42 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
   [fullnameInput, emailInput, phoneInput, liInput, gitInput].forEach((input) =>
     input.addEventListener("input", updatePersonalPreview)
   );
-
-  emailInput.addEventListener("input", () => {
-    const err = document.getElementById("emailErr");
-    err.classList.toggle(
-      "hidden",
-      !emailInput.value || emailInput.value.endsWith("@gmail.com")
-    );
-  });
-
-  phoneInput.addEventListener("input", () => {
-    const err = document.getElementById("phoneErr");
-    err.classList.toggle(
-      "hidden",
-      /^[1-9][0-9]{9}$/.test(phoneInput.value.trim())
-    );
-  });
-
-  liInput.addEventListener("input", () => {
-    const err = document.getElementById("liErr");
-    try {
-      const url = new URL(liInput.value);
-      err.classList.toggle("hidden", url.hostname.includes("linkedin.com"));
-    } catch {
-      err.classList.remove("hidden");
-    }
-  });
-
-  gitInput.addEventListener("input", () => {
-    const err = document.getElementById("gitErr");
-    try {
-      const url = new URL(gitInput.value);
-      err.classList.toggle("hidden", url.hostname.includes("github.com"));
-    } catch {
-      err.classList.remove("hidden");
-    }
-  });
 
   /** ---------------------- Profile Photo ---------------------- **/
   const profileUpload = document.getElementById("profileUpload");
@@ -105,12 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
   previewContent.prepend(livePhotoPlaceholder);
 
   profileUpload.addEventListener("change", function () {
-    avatarPreview.innerHTML = "";
     const file = this.files[0];
     if (file && file.type.startsWith("image/")) {
       const img = document.createElement("img");
       img.src = URL.createObjectURL(file);
       img.className = "w-28 h-28 rounded-full object-cover";
+      avatarPreview.innerHTML = "";
       avatarPreview.appendChild(img);
 
       livePhoto.src = URL.createObjectURL(file);
@@ -127,6 +89,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const objectiveInput = document.getElementById("objectiveText");
   const generateBtn = document.getElementById("generateObjectiveBtn");
   const roleInput = document.getElementById("roleInput");
+  const previewObjective = document.getElementById("previewObjective");
+  const activitiesInput = document.getElementById("activitiesText");
+  const previewActivities = document.getElementById("previewActivities");
 
   objectiveInput.addEventListener("input", () => {
     previewObjective.textContent = objectiveInput.value || "---";
@@ -140,216 +105,11 @@ document.addEventListener("DOMContentLoaded", () => {
     previewObjective.textContent = generatedText;
   });
 
-  const activitiesInput = document.getElementById("activitiesText");
   activitiesInput.addEventListener("input", () => {
     previewActivities.textContent = activitiesInput.value || "---";
   });
 
-  /** ---------------------- Sections Data ---------------------- **/
-  const sectionsData = [
-    { id: "education", title: "Education", listRef: "educationList" },
-    { id: "projects", title: "Projects", listRef: "projectsList" },
-    { id: "work", title: "Work Experience", listRef: "workList" },
-    { id: "certs", title: "Certifications", listRef: "certList" },
-  ];
-
-  // Create preview sections dynamically
-  sectionsData.forEach((section) => {
-    const sectionDiv = document.createElement("div");
-    sectionDiv.innerHTML = `<h3 class="font-semibold mt-3">${section.title}</h3>`;
-    const listEl = document.createElement("ul");
-    listEl.id = `preview-${section.id}`;
-    listEl.className = "text-sm list-disc ml-5 mt-1";
-    sectionDiv.appendChild(listEl);
-    previewContent.appendChild(sectionDiv);
-    section.previewEl = listEl;
-    section.sectionDiv = sectionDiv;
-  });
-
-  /** ---------------------- Generic Update Function ---------------------- **/
-  function updatePreview(sectionId) {
-    const section = sectionsData.find((s) => s.id === sectionId);
-    const listContainer = document.getElementById(section.listRef);
-    if (!listContainer) return;
-
-    section.previewEl.innerHTML = "";
-    listContainer.querySelectorAll("div").forEach((card) => {
-      const values = Array.from(
-        card.querySelectorAll("input, select, textarea")
-      ).map((el) => (el.value ? el.value : ""));
-      if (values.some((v) => v.trim() !== "")) {
-        const li = document.createElement("li");
-        li.textContent = values.join(" | ");
-        section.previewEl.appendChild(li);
-      }
-    });
-    section.sectionDiv.style.display = section.previewEl.children.length
-      ? "block"
-      : "none";
-  }
-
-  /** ---------------------- Create Education Card ---------------------- **/
-  const educationList = document.getElementById("educationList");
-  const addEducationBtn = document.getElementById("addEducationBtn");
-
-  function createEducationCard() {
-    const card = document.createElement("div");
-    card.className =
-      "p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
-    card.innerHTML = `
-      <div>
-        <input type="text" placeholder="Qualification" class="education-qualification">
-        <input type="text" placeholder="College" class="education-college">
-        <input type="text" placeholder="Location" class="education-location">
-        <input type="date" class="education-start-date">
-        <input type="date" class="education-end-date">
-        <input type="text" placeholder="Grade" class="education-grade">
-      </div>
-      <button class="remove-btn absolute top-2 right-2 text-red-500">Remove</button>
-    `;
-    card.querySelector(".remove-btn").addEventListener("click", () => {
-      card.remove();
-      updatePreview("education");
-    });
-    card
-      .querySelectorAll("input, select")
-      .forEach((el) =>
-        el.addEventListener("input", () => updatePreview("education"))
-      );
-    educationList.appendChild(card);
-  }
-  addEducationBtn.addEventListener("click", createEducationCard);
-
-  /** ---------------------- Generic Section Card Creator ---------------------- **/
-  function setupSection(sectionId, addBtnId, createCardFn) {
-    const listEl = document.getElementById(
-      sectionsData.find((s) => s.id === sectionId).listRef
-    );
-    const addBtn = document.getElementById(addBtnId);
-    addBtn.addEventListener("click", () => {
-      const card = createCardFn();
-      listEl.appendChild(card);
-      card
-        .querySelectorAll("input, textarea, select")
-        .forEach((el) =>
-          el.addEventListener("input", () => updatePreview(sectionId))
-        );
-      card.querySelector(".remove-btn").addEventListener("click", () => {
-        card.remove();
-        updatePreview(sectionId);
-      });
-      updatePreview(sectionId);
-    });
-  }
-
-  // Project Card
-  function createProjectCard() {
-    const card = document.createElement("div");
-    card.className =
-      "p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
-    card.innerHTML = `
-      <input type="text" placeholder="Project Title" class="project-title">
-      <input type="text" placeholder="Technologies Used" class="project-techs">
-      <input type="date" class="project-start-date">
-      <input type="date" class="project-end-date">
-      <textarea placeholder="Description" class="project-description"></textarea>
-      <button class="remove-btn absolute top-2 right-2 text-red-500">Remove</button>
-    `;
-    return card;
-  }
-  setupSection("projects", "addProjectBtn", createProjectCard);
-
-  // Work Card
-  function createWorkCard() {
-    const card = document.createElement("div");
-    card.className =
-      "p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
-    card.innerHTML = `
-      <input type="text" placeholder="Job Title" class="work-title">
-      <input type="text" placeholder="Company" class="work-company">
-      <input type="date" class="work-start-date">
-      <input type="date" class="work-end-date">
-      <textarea placeholder="Achievements" class="work-achievements"></textarea>
-      <button class="remove-btn absolute top-2 right-2 text-red-500">Remove</button>
-    `;
-    return card;
-  }
-  setupSection("work", "addWorkBtn", createWorkCard);
-
-  // Certification Card
-  function createCertCard() {
-    const card = document.createElement("div");
-    card.className =
-      "p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
-    card.innerHTML = `
-      <input type="text" placeholder="Certification Name" class="cert-name">
-      <input type="text" placeholder="Issuer" class="cert-issuer">
-      <input type="month" class="cert-date">
-      <button class="remove-btn absolute top-2 right-2 text-red-500">Remove</button>
-    `;
-    return card;
-  }
-  setupSection("certs", "addCertBtn", createCertCard);
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const previewContent = document.getElementById("previewContent");
-
-  // --- Profile Photo ---
-  const livePhoto = document.getElementById("previewPhoto");
-  const livePhotoPlaceholder = document.getElementById(
-    "previewPhotoPlaceholder"
-  );
-  const profileUpload = document.getElementById("profileUpload");
-  profileUpload.addEventListener("change", function () {
-    const file = this.files[0];
-    if (file && file.type.startsWith("image/")) {
-      livePhoto.src = URL.createObjectURL(file);
-      livePhoto.style.display = "block";
-      livePhotoPlaceholder.style.display = "none";
-    } else {
-      livePhoto.style.display = "none";
-      livePhotoPlaceholder.style.display = "flex";
-    }
-  });
-
-  // --- Personal Info ---
-  const fullnameInput = document.querySelector('input[name="fullname"]');
-  const emailInput = document.getElementById("personalEmail");
-  const phoneInput = document.getElementById("personalPhone");
-  const liInput = document.getElementById("linkedinInput");
-  const gitInput = document.getElementById("githubInput");
-
-  function updatePersonalPreview() {
-    document.getElementById("previewName").textContent =
-      fullnameInput.value || "---";
-    document.getElementById("previewEmail").textContent =
-      emailInput.value || "---";
-    document.getElementById("previewPhone").textContent =
-      phoneInput.value || "---";
-    document.getElementById("previewLinkedIn").textContent =
-      liInput.value || "---";
-    document.getElementById("previewGitHub").textContent =
-      gitInput.value || "---";
-  }
-
-  [fullnameInput, emailInput, phoneInput, liInput, gitInput].forEach((input) =>
-    input.addEventListener("input", updatePersonalPreview)
-  );
-
-  // --- Objective & Activities ---
-  const objectiveInput = document.getElementById("objectiveText");
-  const activitiesInput = document.getElementById("activitiesText");
-  objectiveInput.addEventListener("input", () => {
-    document.getElementById("previewObjective").textContent =
-      objectiveInput.value || "---";
-  });
-  activitiesInput.addEventListener("input", () => {
-    document.getElementById("previewActivities").textContent =
-      activitiesInput.value || "---";
-  });
-
-  // --- Skills ---
+  /** ---------------------- Skills ---------------------- **/
   const skillTagsContainer = document.getElementById("skillTags");
   const previewSkillsSection = document.getElementById(
     "preview-skills-section"
@@ -366,13 +126,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const ul = document.createElement("ul");
     ul.className = "text-sm list-disc ml-5 mt-1";
-
     skills.forEach((skill) => {
       const li = document.createElement("li");
       li.textContent = skill.textContent;
       ul.appendChild(li);
     });
-
     previewSkillsSection.appendChild(ul);
   }
 
@@ -396,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("skillInput").value = "";
   });
 
-  // --- Generic Section Preview (Education, Projects, Work, Certifications) ---
+  /** ---------------------- Sections: Education, Projects, Work, Certs ---------------------- **/
   const sectionsData = [
     {
       id: "education",
@@ -425,12 +183,12 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
   sectionsData.forEach((section) => {
-    const updateSectionPreview = () => {
-      const listContainer = document.getElementById(section.listRef);
-      const previewContainer = document.getElementById(section.previewEl);
-      previewContainer.innerHTML = "";
+    const listContainer = document.getElementById(section.listRef);
+    const previewContainer = document.getElementById(section.previewEl);
 
-      const cards = listContainer.querySelectorAll("div");
+    function updateSectionPreview() {
+      previewContainer.innerHTML = "";
+      const cards = listContainer.querySelectorAll(".card");
       if (cards.length === 0) return;
 
       const header = document.createElement("h3");
@@ -452,26 +210,93 @@ document.addEventListener("DOMContentLoaded", () => {
           li.textContent = values.join(" | ");
           ul.appendChild(li);
         }
-
-        // Attach remove event for live update
-        const removeBtn = card.querySelector(".remove-btn");
-        if (removeBtn) {
-          removeBtn.addEventListener("click", () => {
-            card.remove();
-            updateSectionPreview();
-          });
-        }
       });
 
       if (ul.children.length > 0) previewContainer.appendChild(ul);
-    };
+    }
 
-    // Initial preview update
-    updateSectionPreview();
+    // Initialize preview on input
+    listContainer.addEventListener("input", updateSectionPreview);
 
-    // Update preview on input dynamically
-    document
-      .getElementById(section.listRef)
-      .addEventListener("input", updateSectionPreview);
+    // Store update function for card creators
+    section.updatePreview = updateSectionPreview;
   });
+
+  /** ---------------------- Generic Card Creator ---------------------- **/
+  function createCard(listRef, fieldsHtml) {
+    const card = document.createElement("div");
+    card.className =
+      "card p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
+    card.innerHTML =
+      fieldsHtml +
+      `<button class="remove-btn absolute top-2 right-2 text-red-500">Remove</button>`;
+
+    const removeBtn = card.querySelector(".remove-btn");
+    removeBtn.addEventListener("click", () => {
+      card.remove();
+      const section = sectionsData.find((s) => s.listRef === listRef);
+      section.updatePreview();
+    });
+
+    return card;
+  }
+
+  /** ---------------------- Setup Sections ---------------------- **/
+  function setupSection(sectionId, addBtnId, fieldsHtml) {
+    const listContainer = document.getElementById(sectionId);
+    const addBtn = document.getElementById(addBtnId);
+    const section = sectionsData.find((s) => s.listRef === sectionId);
+
+    addBtn.addEventListener("click", () => {
+      const card = createCard(sectionId, fieldsHtml);
+      listContainer.appendChild(card);
+      card
+        .querySelectorAll("input, textarea, select")
+        .forEach((el) => el.addEventListener("input", section.updatePreview));
+      section.updatePreview();
+    });
+  }
+
+  // Education
+  setupSection(
+    "educationList",
+    "addEducationBtn",
+    `<input type="text" placeholder="Qualification">
+     <input type="text" placeholder="College">
+     <input type="text" placeholder="Location">
+     <input type="date">
+     <input type="date">
+     <input type="text" placeholder="Grade">`
+  );
+
+  // Projects
+  setupSection(
+    "projectsList",
+    "addProjectBtn",
+    `<input type="text" placeholder="Project Title">
+     <input type="text" placeholder="Technologies Used">
+     <input type="date">
+     <input type="date">
+     <textarea placeholder="Description"></textarea>`
+  );
+
+  // Work
+  setupSection(
+    "workList",
+    "addWorkBtn",
+    `<input type="text" placeholder="Job Title">
+     <input type="text" placeholder="Company">
+     <input type="date">
+     <input type="date">
+     <textarea placeholder="Achievements"></textarea>`
+  );
+
+  // Certifications
+  setupSection(
+    "certList",
+    "addCertBtn",
+    `<input type="text" placeholder="Certification Name">
+     <input type="text" placeholder="Issuer">
+     <input type="month">`
+  );
 });
