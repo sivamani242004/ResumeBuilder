@@ -472,27 +472,49 @@
           >
             <h2 class="text-lg font-semibold mb-3">Live Preview</h2>
             <div id="previewContent" class="space-y-2 text-sm">
-              <p><strong>Name:</strong> <span id="previewName">---</span></p>
-              <p><strong>Email:</strong> <span id="previewEmail">---</span></p>
-              <p><strong>Phone:</strong> <span id="previewPhone">---</span></p>
-              <p>
-                <strong>LinkedIn:</strong> <span id="previewLinkedIn">---</span>
-              </p>
-              <p>
-                <strong>GitHub:</strong> <span id="previewGitHub">---</span>
-              </p>
+              <!-- Profile Photo -->
+              <div class="flex items-center gap-3">
+                <img
+                  id="previewPhoto"
+                  class="w-24 h-24 rounded-full object-cover"
+                  style="display: none"
+                />
+                <div>
+                  <p>
+                    <strong>Name:</strong> <span id="previewName">---</span>
+                  </p>
+                  <p>
+                    <strong>Email:</strong> <span id="previewEmail">---</span>
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> <span id="previewPhone">---</span>
+                  </p>
+                  <p>
+                    <strong>LinkedIn:</strong>
+                    <span id="previewLinkedIn">---</span>
+                  </p>
+                  <p>
+                    <strong>GitHub:</strong> <span id="previewGitHub">---</span>
+                  </p>
+                </div>
+              </div>
+
               <p>
                 <strong>Objective:</strong>
                 <span id="previewObjective">---</span>
               </p>
-              <p>
-                <strong>Skills:</strong> <span id="previewSkills">---</span>
-              </p>
-              <p>
-                <strong>Activities:</strong>
-                <span id="previewActivities">---</span>
-              </p>
+
+              <!-- Dynamic Sections -->
+              <div id="preview-education-section"></div>
+              <div id="preview-projects-section"></div>
+              <div id="preview-work-section"></div>
+              <div id="preview-certifications-section"></div>
+              <div id="preview-skills-section"></div>
             </div>
+            <p>
+              <strong>Activities:</strong>
+              <span id="previewActivities">---</span>
+            </p>
           </section>
         </div>
       </main>
