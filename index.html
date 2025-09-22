@@ -247,14 +247,39 @@
               class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
             >
               <h2 class="text-lg font-semibold">Objective</h2>
-              <label class="text-sm mt-3 block">Summary</label>
-              <textarea
-                id="objectiveText"
-                oninput="autoExpandTextarea(this)"
-                rows="3"
-                class="mt-2 w-full rounded-lg border border-gray-200 p-3 resize-none"
-                placeholder="Write a short objective..."
-              ></textarea>
+              <div class="mt-4">
+                <label
+                  for="objectiveText"
+                  class="block text-sm font-medium text-gray-700"
+                  >Summary</label
+                >
+                <textarea
+                  id="objectiveText"
+                  rows="3"
+                  placeholder="Write your objective or use AI to generate..."
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3"
+                ></textarea>
+                <button
+                  id="generateObjectiveBtn"
+                  class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 m-2"
+                >
+                  Generate Objective
+                </button>
+                <!-- Role Input for AI Objective -->
+                <div class="mb-4">
+                  <label
+                    for="roleInput"
+                    class="block text-sm font-medium text-gray-700"
+                    >Enter Role</label
+                  >
+                  <input
+                    type="text"
+                    id="roleInput"
+                    placeholder="e.g. Frontend Developer"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                  />
+                </div>
+              </div>
             </section>
 
             <!-- EDUCATION -->

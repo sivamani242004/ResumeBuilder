@@ -86,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const avatarPreview = document.getElementById("avatarPreview");
   const previewContent = document.getElementById("previewContent");
 
-  // Initialize live preview photo and placeholder
   let livePhoto = document.createElement("img");
   livePhoto.id = "previewPhoto";
   livePhoto.className = "w-24 h-24 rounded-full object-cover mb-2";
@@ -103,13 +102,11 @@ document.addEventListener("DOMContentLoaded", () => {
     avatarPreview.innerHTML = "";
     const file = this.files[0];
     if (file && file.type.startsWith("image/")) {
-      // Update sidebar
       const img = document.createElement("img");
       img.src = URL.createObjectURL(file);
       img.className = "w-28 h-28 rounded-full object-cover";
       avatarPreview.appendChild(img);
 
-      // Update live preview
       livePhoto.src = URL.createObjectURL(file);
       livePhoto.style.display = "block";
       livePhotoPlaceholder.style.display = "none";
@@ -122,14 +119,121 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /** ---------------------- Objective & Activities ---------------------- **/
   const objectiveInput = document.getElementById("objectiveText");
+  const generateBtn = document.getElementById("generateObjectiveBtn");
+  const roleInput = document.getElementById("roleInput");
+
   objectiveInput.addEventListener("input", () => {
     previewObjective.textContent = objectiveInput.value || "---";
+  });
+
+  generateBtn.addEventListener("click", () => {
+    const role = roleInput.value.trim();
+    if (!role) return alert("Please enter a role to generate an objective.");
+    const generatedText = `Motivated ${role} with a passion for building efficient and user-friendly solutions, seeking to contribute skills and grow in a dynamic environment.`;
+    objectiveInput.value = generatedText;
+    previewObjective.textContent = generatedText;
   });
 
   const activitiesInput = document.getElementById("activitiesText");
   activitiesInput.addEventListener("input", () => {
     previewActivities.textContent = activitiesInput.value || "---";
   });
+
+  /** ---------------------- Sections Data ---------------------- **/
+  const sectionsData = [
+    { id: "education", title: "Education", listRef: "educationList", fields: [
+        { className: "education-qualification", altClass: "education-custom-qualification" },
+        { className: "education-college" },
+        { className: "education-location" },
+        { className: "education-start-date" },
+        { className: "education-end-date" },
+        { className: "education-grade" }
+      ] 
+    },
+    { id: "projects", title: "Projects", listRef: "projectsList", fields: [
+        { className: "project-title" },
+        { className: "project-techs" },
+        { className: "project-start-date" },
+        { className: "project-end-date" },
+        { className: "project-description" }
+      ] 
+    },
+    { id: "work", title: "Work Experience", listRef: "workList", fields: [
+        { className: "work-title" },
+        { className: "work-company" },
+        { className: "work-start-date" },
+        { className: "work-end-date" },
+        { className: "work-achievements" }
+      ] 
+    },
+    { id: "certs", title: "Certifications", listRef: "certList", fields: [
+        { className: "cert-name" },
+        { className: "cert-issuer" },
+        { className: "cert-date" }
+      ] 
+    }
+  ];
+
+  // Create live preview sections dynamically
+  sectionsData.forEach(section => {
+    const sectionDiv = document.createElement("div");
+    sectionDiv.innerHTML = `<h3 class="font-semibold mt-3">${section.title}</h3>`;
+    const listEl = document.createElement("ul");
+    listEl.id = `preview-${section.id}`;
+    listEl.className = "text-sm list-disc ml-5 mt-1";
+    sectionDiv.appendChild(listEl);
+    previewContent.appendChild(sectionDiv);
+    section.previewEl = listEl;
+    section.sectionDiv = sectionDiv;
+  });
+
+  /** ---------------------- Generic Update Preview ---------------------- **/
+  function updatePreview(sectionId) {
+    const section = sectionsData.find(s => s.id === sectionId);
+    section.previewEl.innerHTML = ""; // clear previous content
+    const listContainer = window[section.listRef];
+
+    listContainer.querySelectorAll("div").forEach(card => {
+      const values = section.fields.map(f => {
+        const element = card.querySelector(`.${f.className}`);
+        if (!element) return "";
+        if (f.altClass && element.value === "Others") {
+          const altElement = card.querySelector(`.${f.altClass}`);
+          return altElement ? altElement.value : "";
+        }
+        return element.value;
+      });
+
+      if (values.some(v => v && v.trim() !== "")) {
+        let liText = "";
+        switch (sectionId) {
+          case "education":
+            liText = `${values[0] || "---"} - ${values[1] || "---"}, ${values[2] || "---"} (${values[3] || "---"} to ${values[4] || "---"}), Grade: ${values[5] || "---"}`;
+            break;
+          case "projects":
+            liText = `${values[0] || "---"} (${values[1] || "---"}) - ${values[2] || "---"} to ${values[3] || "---"}. ${values[4] || "---"}`;
+            break;
+          case "work":
+            liText = `${values[0] || "---"} at ${values[1] || "---"} (${values[2] || "---"} to ${values[3] || "---"}). Achievements: ${values[4] || "---"}`;
+            break;
+          case "certs":
+            liText = `${values[0] || "---"} by ${values[1] || "---"} (${values[2] || "---"})`;
+            break;
+        }
+        const li = document.createElement("li");
+        li.textContent = liText;
+        section.previewEl.appendChild(li);
+      }
+    });
+
+    section.sectionDiv.style.display = section.previewEl.children.length ? "block" : "none";
+  }
+
+  // Convenience update functions
+  function updateEducationPreview() { updatePreview("education"); }
+  function updateProjectsPreview() { updatePreview("projects"); }
+  function updateWorkPreview() { updatePreview("work"); }
+  function updateCertsPreview() { updatePreview("certs"); }
 
   /** ---------------------- Education Section ---------------------- **/
   const educationList = document.getElementById("educationList");
@@ -158,57 +262,79 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         <div>
           <label class="block text-sm">College/University</label>
-          <input type="text" placeholder="College/University/School" class="mt-1 w-full px-3 py-2 border rounded-md education-college">
+          <input type="text" class="mt-1 w-full px-3 py-2 border rounded-md education-college" placeholder="College/University">
         </div>
       </div>
-      <div>
-        <label class="block text-sm">Location</label>
-        <input type="text" placeholder="Location" class="mt-1 w-full px-3 py-2 border rounded-md education-location">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <input type="text" placeholder="Location" class="education-location mt-1 px-3 py-2 border rounded-md">
+        <input type="date" class="education-start-date mt-1 px-3 py-2 border rounded-md">
+        <input type="date" class="education-end-date mt-1 px-3 py-2 border rounded-md">
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div>
-          <label class="block text-sm">Start Date</label>
-          <input type="date" class="mt-1 w-full px-3 py-2 border rounded-md education-start-date">
-        </div>
-        <div>
-          <label class="block text-sm">End Date</label>
-          <input type="date" class="mt-1 w-full px-3 py-2 border rounded-md education-end-date">
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm">Grade/Score</label>
-        <input type="text" placeholder="Grade/Score" class="mt-1 w-full px-3 py-2 border rounded-md education-grade">
-      </div>
-      <button type="button" class="remove-btn absolute top-2 right-2 text-sm px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200">Remove</button>
+      <input type="text" placeholder="Grade / Percentage" class="education-grade mt-1 px-3 py-2 border rounded-md w-full">
+      <button class="absolute top-2 right-2 text-red-500 remove-btn">Remove</button>
     `;
-    return card;
+
+    /** ---------------------- Skills Section ---------------------- **/
+const skillCategory = document.getElementById("skillCategory");
+const skillInput = document.getElementById("skillInput");
+const skillLevel = document.getElementById("skillLevel");
+const addSkillBtn = document.getElementById("addSkillBtn");
+const skillTagsContainer = document.getElementById("skillTags");
+
+const skillsData = []; // store skills
+
+function updateSkillsPreview() {
+  if (!skillsData.length) {
+    previewSkills.textContent = "---";
+    return;
   }
-
-  addEducationBtn.addEventListener("click", () => {
-    const newCard = createEducationCard();
-    educationList.appendChild(newCard);
-
-    const select = newCard.querySelector(".education-qualification");
-    const customInput = newCard.querySelector(".education-custom-qualification");
-
-    select.addEventListener("change", () => {
-      customInput.classList.toggle("hidden", select.value !== "Others");
-      updateEducationPreview();
-    });
-
-    newCard.querySelectorAll("input").forEach(input => {
-      input.addEventListener("input", updateEducationPreview);
-    });
-
-    newCard.querySelector(".remove-btn").addEventListener("click", () => {
-      newCard.remove();
-      updateEducationPreview();
-    });
-
-    updateEducationPreview();
+  // Group skills by category
+  const grouped = {};
+  skillsData.forEach(s => {
+    if (!grouped[s.category]) grouped[s.category] = [];
+    grouped[s.category].push(`${s.name} (${s.level})`);
   });
 
-  /** ---------------------- Projects Section ---------------------- **/
+  // Generate a string like: "Frontend: React (Intermediate), Angular (Basic) | Backend: Node.js (Advanced)"
+  const result = Object.entries(grouped).map(([cat, arr]) => `${cat}: ${arr.join(", ")}`).join(" | ");
+  previewSkills.textContent = result;
+
+  // Update tag container for visual tags (optional)
+  skillTagsContainer.innerHTML = "";
+  skillsData.forEach((s, index) => {
+    const tag = document.createElement("span");
+    tag.className = "bg-indigo-100 text-indigo-800 px-2 py-1 rounded-md text-sm flex items-center gap-1";
+    tag.textContent = `${s.name} (${s.level})`;
+    const removeBtn = document.createElement("button");
+    removeBtn.className = "ml-1 text-red-500 font-bold";
+    removeBtn.textContent = "x";
+    removeBtn.addEventListener("click", () => {
+      skillsData.splice(index, 1);
+      updateSkillsPreview();
+    });
+    tag.appendChild(removeBtn);
+    skillTagsContainer.appendChild(tag);
+  });
+}
+
+addSkillBtn.addEventListener("click", () => {
+  const name = skillInput.value.trim();
+  if (!name) return alert("Enter a skill name");
+  const category = skillCategory.value;
+  const level = skillLevel.value;
+
+  // Prevent exact duplicate entries
+  if (skillsData.some(s => s.name.toLowerCase() === name.toLowerCase() && s.category === category)) {
+    return alert("Skill already added in this category");
+  }
+
+  skillsData.push({ name, category, level });
+  skillInput.value = "";
+  updateSkillsPreview();
+});
+
+
+/** ---------------------- Projects Section ---------------------- **/
   const projectsList = document.getElementById("projectsList");
   const addProjectBtn = document.getElementById("addProjectBtn");
 
@@ -243,19 +369,47 @@ document.addEventListener("DOMContentLoaded", () => {
     return card;
   }
 
+  function updateProjectsPreview() {
+    const previewId = "preview-projects";
+    let sectionDiv = document.getElementById(previewId);
+    if (!sectionDiv) {
+      sectionDiv = document.createElement("div");
+      sectionDiv.innerHTML = `<h3 class="font-semibold mt-3">Projects</h3>`;
+      const ul = document.createElement("ul");
+      ul.id = previewId;
+      ul.className = "text-sm list-disc ml-5 mt-1";
+      sectionDiv.appendChild(ul);
+      previewContent.appendChild(sectionDiv);
+    }
+    const ul = sectionDiv.querySelector("ul");
+    ul.innerHTML = "";
+
+    projectsList.querySelectorAll("div").forEach(card => {
+      const title = card.querySelector(".project-title")?.value;
+      const techs = card.querySelector(".project-techs")?.value;
+      const start = card.querySelector(".project-start-date")?.value;
+      const end = card.querySelector(".project-end-date")?.value;
+      const desc = card.querySelector(".project-description")?.value;
+      if (title || techs || start || end || desc) {
+        const li = document.createElement("li");
+        li.textContent = `${title || ""} (${techs || ""}) - ${start || ""} to ${end || ""}. ${desc || ""}`;
+        ul.appendChild(li);
+      }
+    });
+
+    sectionDiv.style.display = ul.children.length ? "block" : "none";
+  }
+
   addProjectBtn.addEventListener("click", () => {
     const newCard = createProjectCard();
     projectsList.appendChild(newCard);
-
     newCard.querySelectorAll("input, textarea").forEach(input => {
       input.addEventListener("input", updateProjectsPreview);
     });
-
     newCard.querySelector(".remove-btn").addEventListener("click", () => {
       newCard.remove();
       updateProjectsPreview();
     });
-
     updateProjectsPreview();
   });
 
@@ -294,19 +448,47 @@ document.addEventListener("DOMContentLoaded", () => {
     return card;
   }
 
+  function updateWorkPreview() {
+    const previewId = "preview-work";
+    let sectionDiv = document.getElementById(previewId);
+    if (!sectionDiv) {
+      sectionDiv = document.createElement("div");
+      sectionDiv.innerHTML = `<h3 class="font-semibold mt-3">Work Experience</h3>`;
+      const ul = document.createElement("ul");
+      ul.id = previewId;
+      ul.className = "text-sm list-disc ml-5 mt-1";
+      sectionDiv.appendChild(ul);
+      previewContent.appendChild(sectionDiv);
+    }
+    const ul = sectionDiv.querySelector("ul");
+    ul.innerHTML = "";
+
+    workList.querySelectorAll("div").forEach(card => {
+      const title = card.querySelector(".work-title")?.value;
+      const company = card.querySelector(".work-company")?.value;
+      const start = card.querySelector(".work-start-date")?.value;
+      const end = card.querySelector(".work-end-date")?.value;
+      const achievements = card.querySelector(".work-achievements")?.value;
+      if (title || company || start || end || achievements) {
+        const li = document.createElement("li");
+        li.textContent = `${title || ""} at ${company || ""} (${start || ""} to ${end || ""}). Achievements: ${achievements || ""}`;
+        ul.appendChild(li);
+      }
+    });
+
+    sectionDiv.style.display = ul.children.length ? "block" : "none";
+  }
+
   addWorkBtn.addEventListener("click", () => {
     const newCard = createWorkCard();
     workList.appendChild(newCard);
-
     newCard.querySelectorAll("input, textarea").forEach(input => {
       input.addEventListener("input", updateWorkPreview);
     });
-
     newCard.querySelector(".remove-btn").addEventListener("click", () => {
       newCard.remove();
       updateWorkPreview();
     });
-
     updateWorkPreview();
   });
 
@@ -335,147 +517,69 @@ document.addEventListener("DOMContentLoaded", () => {
     return card;
   }
 
+  function updateCertsPreview() {
+    const previewId = "preview-certs";
+    let sectionDiv = document.getElementById(previewId);
+    if (!sectionDiv) {
+      sectionDiv = document.createElement("div");
+      sectionDiv.innerHTML = `<h3 class="font-semibold mt-3">Certifications</h3>`;
+      const ul = document.createElement("ul");
+      ul.id = previewId;
+      ul.className = "text-sm list-disc ml-5 mt-1";
+      sectionDiv.appendChild(ul);
+      previewContent.appendChild(sectionDiv);
+    }
+    const ul = sectionDiv.querySelector("ul");
+    ul.innerHTML = "";
+
+    certList.querySelectorAll("div").forEach(card => {
+      const name = card.querySelector(".cert-name")?.value;
+      const issuer = card.querySelector(".cert-issuer")?.value;
+      const date = card.querySelector(".cert-date")?.value;
+      if (name || issuer || date) {
+        const li = document.createElement("li");
+        li.textContent = `${name || ""} by ${issuer || ""} (${date || ""})`;
+        ul.appendChild(li);
+      }
+    });
+
+    sectionDiv.style.display = ul.children.length ? "block" : "none";
+  }
+
   addCertBtn.addEventListener("click", () => {
     const newCard = createCertCard();
     certList.appendChild(newCard);
-
     newCard.querySelectorAll("input").forEach(input => {
       input.addEventListener("input", updateCertsPreview);
     });
-
     newCard.querySelector(".remove-btn").addEventListener("click", () => {
       newCard.remove();
       updateCertsPreview();
     });
-
     updateCertsPreview();
   });
 
-  /** ---------------------- Skills ---------------------- **/
-  const skillCategory = document.getElementById("skillCategory");
-  const skillInput = document.getElementById("skillInput");
-  const skillLevel = document.getElementById("skillLevel");
-  const addSkillBtn = document.getElementById("addSkillBtn");
-  const skillTags = document.getElementById("skillTags");
 
-  function createSkillTag(category, skill, level) {
-    const tag = document.createElement("div");
-    tag.className = "flex items-center gap-2 bg-indigo-100 text-indigo-800 text-sm px-3 py-1 rounded-full";
-    tag.innerHTML = `<span class="font-medium">${category}:</span> <span>${skill} (${level})</span> <button class="remove-skill-btn text-indigo-500 hover:text-indigo-700">&times;</button>`;
-    return tag;
-  }
-
-  function updateSkillsPreview() {
-    previewSkills.innerHTML = "";
-    skillTags.querySelectorAll("div").forEach(tag => {
-      const clone = tag.cloneNode(true);
-      clone.querySelector("button")?.remove();
-      previewSkills.appendChild(clone);
+    // Handle "Others" selection
+    const select = card.querySelector(".education-qualification");
+    const input = card.querySelector(".education-custom-qualification");
+    select.addEventListener("change", () => {
+      input.classList.toggle("hidden", select.value !== "Others");
+      updateEducationPreview();
     });
-  }
 
-  addSkillBtn.addEventListener("click", () => {
-    const category = skillCategory.value;
-    const skill = skillInput.value.trim();
-    const level = skillLevel.value;
-    if (!skill) return;
-    skillTags.appendChild(createSkillTag(category, skill, level));
-    skillInput.value = "";
-    updateSkillsPreview();
-  });
-
-  skillTags.addEventListener("click", (e) => {
-    if (e.target.classList.contains("remove-skill-btn")) {
-      e.target.closest("div").remove();
-      updateSkillsPreview();
-    }
-  });
-
-  /** ---------------------- Live Preview Updates ---------------------- **/
-  const previewEducation = document.createElement("ul");
-  previewEducation.id = "preview-education";
-  previewEducation.className = "text-sm list-disc ml-5 mt-1";
-  previewContent.appendChild(previewEducation);
-
-  const previewProjects = document.createElement("ul");
-  previewProjects.id = "preview-projects";
-  previewProjects.className = "text-sm list-disc ml-5 mt-1";
-  previewContent.appendChild(previewProjects);
-
-  const previewWork = document.createElement("ul");
-  previewWork.id = "preview-work";
-  previewWork.className = "text-sm list-disc ml-5 mt-1";
-  previewContent.appendChild(previewWork);
-
-  const previewCerts = document.createElement("ul");
-  previewCerts.id = "preview-certs";
-  previewCerts.className = "text-sm list-disc ml-5 mt-1";
-  previewContent.appendChild(previewCerts);
-
-  function updateEducationPreview() {
-    previewEducation.innerHTML = "";
-    educationList.querySelectorAll(".p-4").forEach(card => {
-      const qual = card.querySelector(".education-qualification").value;
-      const customQual = card.querySelector(".education-custom-qualification").value;
-      const college = card.querySelector(".education-college").value;
-      const location = card.querySelector(".education-location").value;
-      const start = card.querySelector(".education-start-date").value;
-      const end = card.querySelector(".education-end-date").value;
-      const grade = card.querySelector(".education-grade").value;
-      const li = document.createElement("li");
-      li.textContent = `${qual === "Others" ? customQual : qual} | ${college} | ${location} | ${start} - ${end} | ${grade}`;
-      previewEducation.appendChild(li);
+    card.querySelectorAll("input, select").forEach(el => {
+      el.addEventListener("input", updateEducationPreview);
     });
-  }
 
-  function updateProjectsPreview() {
-    previewProjects.innerHTML = "";
-    projectsList.querySelectorAll(".p-4").forEach(card => {
-      const title = card.querySelector(".project-title").value;
-      const techs = card.querySelector(".project-techs").value;
-      const start = card.querySelector(".project-start-date").value;
-      const end = card.querySelector(".project-end-date").value;
-      const desc = card.querySelector(".project-description").value;
-      const li = document.createElement("li");
-      li.textContent = `${title} | ${techs} | ${start} - ${end} | ${desc}`;
-      previewProjects.appendChild(li);
+    card.querySelector(".remove-btn").addEventListener("click", () => {
+      card.remove();
+      updateEducationPreview();
     });
+
+    educationList.appendChild(card);
   }
 
-  function updateWorkPreview() {
-    previewWork.innerHTML = "";
-    workList.querySelectorAll(".p-4").forEach(card => {
-      const title = card.querySelector(".work-title").value;
-      const company = card.querySelector(".work-company").value;
-      const start = card.querySelector(".work-start-date").value;
-      const end = card.querySelector(".work-end-date").value;
-      const ach = card.querySelector(".work-achievements").value;
-      const li = document.createElement("li");
-      li.textContent = `${title} | ${company} | ${start} - ${end} | ${ach}`;
-      previewWork.appendChild(li);
-    });
-  }
-
-  function updateCertsPreview() {
-    previewCerts.innerHTML = "";
-    certList.querySelectorAll(".p-4").forEach(card => {
-      const name = card.querySelector(".cert-name").value;
-      const issuer = card.querySelector(".cert-issuer").value;
-      const date = card.querySelector(".cert-date").value;
-      const li = document.createElement("li");
-      li.textContent = `${name} | ${issuer} | ${date}`;
-      previewCerts.appendChild(li);
-    });
-  }
-
-  educationList.addEventListener("input", updateEducationPreview);
-  projectsList.addEventListener("input", updateProjectsPreview);
-  workList.addEventListener("input", updateWorkPreview);
-  certList.addEventListener("input", updateCertsPreview);
-
-  educationList.addEventListener("click", e => e.target.classList.contains("remove-btn") && updateEducationPreview());
-  projectsList.addEventListener("click", e => e.target.classList.contains("remove-btn") && updateProjectsPreview());
-  workList.addEventListener("click", e => e.target.classList.contains("remove-btn") && updateWorkPreview());
-  certList.addEventListener("click", e => e.target.classList.contains("remove-btn") && updateCertsPreview());
+  addEducationBtn.addEventListener("click", createEducationCard);
 
 });
