@@ -532,16 +532,56 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   exportPdfBtn.addEventListener("click", () => {
-    // simple PDF export using jsPDF text flow
-    const text = collectPreviewText();
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit: "pt", format: "a4" });
-    doc.setFontSize(11);
-    const margin = 40;
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const printableWidth = pageWidth - margin * 2;
-    const lines = doc.splitTextToSize(text, printableWidth);
-    doc.text(lines, margin, 60);
-    doc.save("resume.pdf");
+    const previewContent = document.getElementById("livePreviewPanel");
+
+    // Temporarily apply a fixed width for consistent rendering
+    const originalWidth = previewContent.style.width;
+    const originalPadding = previewContent.style.padding;
+    const originalMargin = previewContent.style.margin;
+    previewContent.style.width = "800px";
+    previewContent.style.padding = "50px";
+    previewContent.style.margin = "0 auto";
+
+    html2canvas(previewContent, {
+      scale: 2, // Use a higher scale for better resolution
+      scrollY: -window.scrollY,
+      useCORS: true,
+      logging: true,
+    })
+      .then((canvas) => {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("p", "mm", "a4");
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = 210; // A4 size in mm
+        const pageHeight = 297;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // Add the image to the PDF
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // Add new pages for content that doesn't fit
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        // Revert temporary styles
+        previewContent.style.width = originalWidth;
+        previewContent.style.padding = originalPadding;
+        previewContent.style.margin = originalMargin;
+
+        pdf.save("resume.pdf");
+      })
+      .catch((error) => {
+        console.error("Error generating PDF:", error);
+        alert(
+          "There was an error generating the PDF. Please check the console for details."
+        );
+      });
   });
 });
