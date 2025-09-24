@@ -447,51 +447,41 @@
             </section>
           </div>
           <section
-            id="livePreviewPanel"
-            class="bg-white rounded-xl2 shadow-soft-md p-6"
-          >
-            <h2 class="text-lg font-semibold mb-3">Live Preview</h2>
-            <div id="previewContent" class="space-y-2 text-sm">
-              <div class="flex items-center gap-3">
-                <img
-                  id="previewPhoto"
-                  class="w-24 h-24 rounded-full object-cover"
-                  style="display: none"
-                />
-                <div>
-                  <p>
-                    <strong>Name:</strong> <span id="previewName">---</span>
-                  </p>
-                  <p>
-                    <strong>Email:</strong> <span id="previewEmail">---</span>
-                  </p>
-                  <p>
-                    <strong>Phone:</strong> <span id="previewPhone">---</span>
-                  </p>
-                  <p>
-                    <strong>LinkedIn:</strong>
-                    <span id="previewLinkedIn">---</span>
-                  </p>
-                  <p>
-                    <strong>GitHub:</strong> <span id="previewGitHub">---</span>
-                  </p>
-                </div>
-              </div>
-              <p>
-                <strong>Objective:</strong>
-                <span id="previewObjective">---</span>
-              </p>
-              <div id="preview-education-section"></div>
-              <div id="preview-projects-section"></div>
-              <div id="preview-work-section"></div>
-              <div id="preview-certifications-section"></div>
-              <div id="preview-skills-section"></div>
-            </div>
-            <p class="mt-3">
-              <strong>Activities:</strong>
-              <span id="previewActivities">---</span>
-            </p>
-          </section>
+  id="livePreviewPanel"
+  class="bg-white rounded-xl2 shadow-soft-md p-6"
+>
+  <h2 class="text-lg font-semibold mb-3">Live Preview</h2>
+  <div id="previewContent" class="space-y-4 text-sm">
+    <!-- Name at the top -->
+    <p id="previewName" class="text-2xl font-bold  mb-2">---</p>
+    <!-- Full width line -->
+    <hr class="border-gray-300 w-full mb-4"/>
+
+    <!-- Photo + details -->
+    <div class="flex items-center gap-3">
+      <img
+        id="previewPhoto"
+        class="w-24 h-24 rounded-full object-cover"
+        style="display: none"
+      />
+      <div class="space-y-1">
+        <p><strong>Email:</strong> <span id="previewEmail">---</span></p>
+        <p><strong>Phone:</strong> <span id="previewPhone">---</span></p>
+        <p><strong>LinkedIn:</strong> <span id="previewLinkedIn">---</span></p>
+        <p><strong>GitHub:</strong> <span id="previewGitHub">---</span></p>
+      </div>
+    </div>
+
+    <p class="mt-3"><strong>Objective:</strong> <span id="previewObjective">---</span></p>
+    <div id="preview-education-section"></div>
+    <div id="preview-projects-section"></div>
+    <div id="preview-work-section"></div>
+    <div id="preview-certifications-section"></div>
+    <div id="preview-skills-section"></div>
+    <p class="mt-3"><strong>Activities:</strong> <span id="previewActivities">---</span></p>
+  </div>
+</section>
+          </div>
         </main>
       </div>
       <footer class="mt-8 text-center text-sm text-gray-500 w-full max-w-6xl">
