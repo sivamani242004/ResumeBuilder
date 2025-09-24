@@ -3,18 +3,46 @@ document.addEventListener("DOMContentLoaded", () => {
   const sectionButtons = document.querySelectorAll(".section-button");
   const sections = document.querySelectorAll(".section-card");
 
+  function clearNavStyles() {
+    sectionButtons.forEach((b) => {
+      b.style.background = "";
+      b.style.color = "";
+      b.style.boxShadow = "";
+      b.setAttribute("aria-current", "false");
+    });
+  }
+  function setActiveBtn(btn) {
+    btn.style.background = "linear-gradient(90deg,#7b63ff,#566dff)";
+    btn.style.color = "#fff";
+    btn.style.boxShadow = "0 8px 20px rgba(14,25,49,0.04)";
+    btn.setAttribute("aria-current", "true");
+  }
+
   function showSection(targetId) {
     sections.forEach((s) => s.classList.add("hidden"));
     const el = document.getElementById(`section-${targetId}`);
     if (el) el.classList.remove("hidden");
+
+    sectionButtons.forEach((btn) => {
+      if (btn.getAttribute("data-target") === targetId) setActiveBtn(btn);
+      else {
+        btn.style.background = "";
+        btn.style.color = "";
+        btn.style.boxShadow = "";
+        btn.setAttribute("aria-current", "false");
+      }
+    });
   }
 
   sectionButtons.forEach((btn) =>
-    btn.addEventListener("click", () =>
-      showSection(btn.getAttribute("data-target"))
-    )
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const t = btn.getAttribute("data-target");
+      if (t) showSection(t);
+    })
   );
 
+  // Show personal at start
   showSection("personal");
 
   /** ---------------------- Auto-expand Textareas ---------------------- **/
@@ -36,52 +64,85 @@ document.addEventListener("DOMContentLoaded", () => {
   const previewLinkedIn = document.getElementById("previewLinkedIn");
   const previewGitHub = document.getElementById("previewGitHub");
 
-  function updatePersonalPreview() {
-    previewName.textContent = fullnameInput.value || "---";
-    previewEmail.textContent = emailInput.value || "---";
-    previewPhone.textContent = phoneInput.value || "---";
-    previewLinkedIn.textContent = liInput.value || "---";
-    previewGitHub.textContent = gitInput.value || "---";
+  function safeText(t) {
+    return t && t.trim() !== "" ? t : "---";
   }
 
-  [fullnameInput, emailInput, phoneInput, liInput, gitInput].forEach((input) =>
-    input.addEventListener("input", updatePersonalPreview)
+  function updatePersonalPreview() {
+    previewName.textContent = safeText(fullnameInput.value);
+    previewEmail.textContent = safeText(emailInput.value);
+    previewPhone.textContent = safeText(phoneInput.value);
+
+    // LinkedIn - show link if valid, otherwise raw text or ---
+    if (liInput.value.trim() && isValidLinkedIn(liInput.value.trim())) {
+      previewLinkedIn.innerHTML = `<a href="${liInput.value.trim()}" target="_blank" rel="noopener">${liInput.value.trim()}</a>`;
+    } else {
+      previewLinkedIn.textContent = liInput.value.trim() || "---";
+    }
+
+    // GitHub
+    if (gitInput.value.trim() && isValidGitHub(gitInput.value.trim())) {
+      previewGitHub.innerHTML = `<a href="${gitInput.value.trim()}" target="_blank" rel="noopener">${gitInput.value.trim()}</a>`;
+    } else {
+      previewGitHub.textContent = gitInput.value.trim() || "---";
+    }
+  }
+
+  [fullnameInput, emailInput, phoneInput, liInput, gitInput].forEach(
+    (input) => input && input.addEventListener("input", updatePersonalPreview)
   );
+
+  // initialize preview values
+  updatePersonalPreview();
 
   /** ---------------------- Profile Photo ---------------------- **/
   const profileUpload = document.getElementById("profileUpload");
   const avatarPreview = document.getElementById("avatarPreview");
   const previewContent = document.getElementById("previewContent");
 
-  let livePhoto = document.createElement("img");
-  livePhoto.id = "previewPhoto";
-  livePhoto.className = "w-24 h-24 rounded-full object-cover mb-2";
-  livePhoto.style.display = "none";
-  previewContent.prepend(livePhoto);
-
-  let livePhotoPlaceholder = document.createElement("div");
-  livePhotoPlaceholder.id = "previewPhotoPlaceholder";
-  livePhotoPlaceholder.className =
-    "w-24 h-24 rounded-full flex items-center justify-center text-4xl bg-[#f0f4ff] mb-2";
-  livePhotoPlaceholder.textContent = "👤";
-  previewContent.prepend(livePhotoPlaceholder);
+  // Reuse existing preview img element if present
+  const previewHeader =
+    previewContent.querySelector(".flex.items-center.gap-3") ||
+    previewContent.querySelector(".flex.items-center");
+  let previewImg = document.getElementById("previewPhoto");
+  let previewPlaceholder = document.getElementById("previewPhotoPlaceholder");
+  if (!previewPlaceholder) {
+    previewPlaceholder = document.createElement("div");
+    previewPlaceholder.id = "previewPhotoPlaceholder";
+    previewPlaceholder.className =
+      "w-24 h-24 rounded-full flex items-center justify-center text-4xl bg-[#f0f4ff]";
+    previewPlaceholder.textContent = "👤";
+  }
+  if (previewHeader) {
+    // insert placeholder before the image (if image exists)
+    if (previewImg) previewHeader.insertBefore(previewPlaceholder, previewImg);
+    else previewHeader.prepend(previewPlaceholder);
+  }
+  if (previewImg) previewImg.style.display = "none";
+  previewPlaceholder.style.display = "flex";
 
   profileUpload.addEventListener("change", function () {
-    const file = this.files[0];
+    const file = this.files && this.files[0];
     if (file && file.type.startsWith("image/")) {
+      const objUrl = URL.createObjectURL(file);
+
+      // show in form avatarPreview
       const img = document.createElement("img");
-      img.src = URL.createObjectURL(file);
+      img.src = objUrl;
       img.className = "w-28 h-28 rounded-full object-cover";
       avatarPreview.innerHTML = "";
       avatarPreview.appendChild(img);
 
-      livePhoto.src = URL.createObjectURL(file);
-      livePhoto.style.display = "block";
-      livePhotoPlaceholder.style.display = "none";
+      // show in preview panel
+      if (previewImg) {
+        previewImg.src = objUrl;
+        previewImg.style.display = "block";
+      }
+      previewPlaceholder.style.display = "none";
     } else {
       avatarPreview.textContent = "No photo";
-      livePhoto.style.display = "none";
-      livePhotoPlaceholder.style.display = "flex";
+      if (previewImg) previewImg.style.display = "none";
+      previewPlaceholder.style.display = "flex";
     }
   });
 
@@ -108,6 +169,117 @@ document.addEventListener("DOMContentLoaded", () => {
   activitiesInput.addEventListener("input", () => {
     previewActivities.textContent = activitiesInput.value || "---";
   });
+
+  /** ---------------------- Validation helpers ---------------------- **/
+  const emailErr = document.getElementById("emailErr");
+  const phoneErr = document.getElementById("phoneErr");
+  const liErr = document.getElementById("liErr");
+  const gitErr = document.getElementById("gitErr");
+
+  function validateEmailField() {
+    const v = emailInput.value.trim();
+    if (!v) {
+      emailErr.classList.add("hidden");
+      return true;
+    }
+    const valid = v.toLowerCase().endsWith("@gmail.com");
+    if (!valid) emailErr.classList.remove("hidden");
+    else emailErr.classList.add("hidden");
+    return valid;
+  }
+
+  function validatePhoneField() {
+    const v = phoneInput.value.trim();
+    if (!v) {
+      phoneErr.classList.add("hidden");
+      return true;
+    }
+    const numeric = /^\d{10}$/.test(v);
+    const notStartZero = !/^0/.test(v);
+    const ok = numeric && notStartZero;
+    if (!ok) phoneErr.classList.remove("hidden");
+    else phoneErr.classList.add("hidden");
+    return ok;
+  }
+
+  function isValidHttpUrl(string) {
+    try {
+      new URL(string);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+  function isValidLinkedIn(url) {
+    if (!isValidHttpUrl(url)) return false;
+    try {
+      const host = new URL(url).hostname.toLowerCase();
+      return host.includes("linkedin.com");
+    } catch (e) {
+      return false;
+    }
+  }
+  function isValidGitHub(url) {
+    if (!isValidHttpUrl(url)) return false;
+    try {
+      const host = new URL(url).hostname.toLowerCase();
+      return host.includes("github.com");
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function validateLinkedInField() {
+    const v = liInput.value.trim();
+    if (!v) {
+      liErr.classList.add("hidden");
+      return true;
+    }
+    const ok = isValidLinkedIn(v);
+    if (!ok) liErr.classList.remove("hidden");
+    else liErr.classList.add("hidden");
+    return ok;
+  }
+  function validateGitHubField() {
+    const v = gitInput.value.trim();
+    if (!v) {
+      gitErr.classList.add("hidden");
+      return true;
+    }
+    const ok = isValidGitHub(v);
+    if (!ok) gitErr.classList.remove("hidden");
+    else gitErr.classList.add("hidden");
+    return ok;
+  }
+
+  if (emailInput) {
+    emailInput.addEventListener("input", () => {
+      emailErr.classList.add("hidden");
+      updatePersonalPreview();
+    });
+    emailInput.addEventListener("blur", validateEmailField);
+  }
+  if (phoneInput) {
+    phoneInput.addEventListener("input", () => {
+      phoneErr.classList.add("hidden");
+      updatePersonalPreview();
+    });
+    phoneInput.addEventListener("blur", validatePhoneField);
+  }
+  if (liInput) {
+    liInput.addEventListener("input", () => {
+      liErr.classList.add("hidden");
+      updatePersonalPreview();
+    });
+    liInput.addEventListener("blur", validateLinkedInField);
+  }
+  if (gitInput) {
+    gitInput.addEventListener("input", () => {
+      gitErr.classList.add("hidden");
+      updatePersonalPreview();
+    });
+    gitInput.addEventListener("blur", validateGitHubField);
+  }
 
   /** ---------------------- Skills ---------------------- **/
   const skillTagsContainer = document.getElementById("skillTags");
@@ -204,7 +376,7 @@ document.addEventListener("DOMContentLoaded", () => {
           card.querySelectorAll("input, select, textarea")
         )
           .map((el) => el.value)
-          .filter((v) => v.trim() !== "");
+          .filter((v) => v && v.trim() !== "");
         if (values.length) {
           const li = document.createElement("li");
           li.textContent = values.join(" | ");
@@ -235,7 +407,7 @@ document.addEventListener("DOMContentLoaded", () => {
     removeBtn.addEventListener("click", () => {
       card.remove();
       const section = sectionsData.find((s) => s.listRef === listRef);
-      section.updatePreview();
+      if (section && section.updatePreview) section.updatePreview();
     });
 
     return card;
@@ -261,42 +433,115 @@ document.addEventListener("DOMContentLoaded", () => {
   setupSection(
     "educationList",
     "addEducationBtn",
-    `<input type="text" placeholder="Qualification">
-     <input type="text" placeholder="College">
-     <input type="text" placeholder="Location">
-     <input type="date">
-     <input type="date">
-     <input type="text" placeholder="Grade">`
+    `<input type="text" placeholder="Qualification" class="w-full p-2 rounded border">
+     <input type="text" placeholder="College" class="w-full p-2 rounded border">
+     <input type="text" placeholder="Location" class="w-full p-2 rounded border">
+     <input type="date" class="w-full p-2 rounded border">
+     <input type="date" class="w-full p-2 rounded border">
+     <input type="text" placeholder="Grade" class="w-full p-2 rounded border">`
   );
 
   // Projects
   setupSection(
     "projectsList",
     "addProjectBtn",
-    `<input type="text" placeholder="Project Title">
-     <input type="text" placeholder="Technologies Used">
-     <input type="date">
-     <input type="date">
-     <textarea placeholder="Description"></textarea>`
+    `<input type="text" placeholder="Project Title" class="w-full p-2 rounded border">
+     <input type="text" placeholder="Technologies Used" class="w-full p-2 rounded border">
+     <input type="date" class="w-full p-2 rounded border">
+     <input type="date" class="w-full p-2 rounded border">
+     <textarea placeholder="Description" class="w-full p-2 rounded border"></textarea>`
   );
 
   // Work
   setupSection(
     "workList",
     "addWorkBtn",
-    `<input type="text" placeholder="Job Title">
-     <input type="text" placeholder="Company">
-     <input type="date">
-     <input type="date">
-     <textarea placeholder="Achievements"></textarea>`
+    `<input type="text" placeholder="Job Title" class="w-full p-2 rounded border">
+     <input type="text" placeholder="Company" class="w-full p-2 rounded border">
+     <input type="date" class="w-full p-2 rounded border">
+     <input type="date" class="w-full p-2 rounded border">
+     <textarea placeholder="Achievements" class="w-full p-2 rounded border"></textarea>`
   );
 
   // Certifications
   setupSection(
     "certList",
     "addCertBtn",
-    `<input type="text" placeholder="Certification Name">
-     <input type="text" placeholder="Issuer">
-     <input type="month">`
+    `<input type="text" placeholder="Certification Name" class="w-full p-2 rounded border">
+     <input type="text" placeholder="Issuer" class="w-full p-2 rounded border">
+     <input type="month" class="w-full p-2 rounded border">`
   );
+
+  /** ---------------------- Export (PDF / TXT) ---------------------- **/
+  function collectPreviewText() {
+    const lines = [];
+    lines.push(`Name: ${previewName.textContent}`);
+    lines.push(`Email: ${previewEmail.textContent}`);
+    lines.push(`Phone: ${previewPhone.textContent}`);
+    // LinkedIn & GitHub raw text
+    lines.push(`LinkedIn: ${liInput.value.trim() || "---"}`);
+    lines.push(`GitHub: ${gitInput.value.trim() || "---"}`);
+    lines.push("");
+    lines.push(
+      `Objective:\n${
+        objectiveInput.value.trim() || previewObjective.textContent || "---"
+      }`
+    );
+    lines.push("");
+
+    // sections (education/projects/work/certs)
+    sectionsData.forEach((s) => {
+      const p = document.getElementById(s.previewEl);
+      if (p && p.innerText.trim()) {
+        lines.push(p.innerText.trim());
+        lines.push("");
+      }
+    });
+
+    // skills
+    const skills = Array.from(skillTagsContainer.querySelectorAll("span")).map(
+      (s) => s.textContent
+    );
+    if (skills.length) {
+      lines.push("Skills:\n" + skills.join(", "));
+      lines.push("");
+    }
+
+    // activities
+    if (activitiesInput.value.trim()) {
+      lines.push("Activities:\n" + activitiesInput.value.trim());
+    }
+
+    return lines.join("\n");
+  }
+
+  const exportTxtBtn = document.getElementById("exportTxtBtn");
+  const exportPdfBtn = document.getElementById("exportPdfBtn");
+
+  exportTxtBtn.addEventListener("click", () => {
+    const txt = collectPreviewText();
+    const blob = new Blob([txt], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "resume.txt";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  exportPdfBtn.addEventListener("click", () => {
+    // simple PDF export using jsPDF text flow
+    const text = collectPreviewText();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: "pt", format: "a4" });
+    doc.setFontSize(11);
+    const margin = 40;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const printableWidth = pageWidth - margin * 2;
+    const lines = doc.splitTextToSize(text, printableWidth);
+    doc.text(lines, margin, 60);
+    doc.save("resume.pdf");
+  });
 });

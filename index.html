@@ -32,103 +32,104 @@
   <body
     class="min-h-screen bg-gradient-to-b from-[#f7fbff] to-[#f5f8fb] font-sans text-slate-800"
   >
-    <div class="flex">
-      <!-- Sidebar -->
-      <aside
-        class="fixed left-0 top-0 bottom-0 w-64 bg-gradient-to-b from-white to-[#fbfdff] border-r border-gray-100 p-6"
+    <div class="flex flex-col items-center p-8">
+      <header class="flex flex-col items-center mb-6 w-full max-w-6xl">
+        <h1 class="text-4xl font-extrabold text-gray-800">
+          RE<span class="text-brandgreen">SU.ME</span> BUILDER
+        </h1>
+        <p class="text-sm font-semibold text-gray-500 mt-2">LIVE PREVIEW</p>
+      </header>
+
+      <div
+        class="w-full max-w-6xl flex flex-col bg-white rounded-xl2 shadow-soft-lg border border-gray-100 min-h-[700px]"
       >
-        <div class="flex items-center gap-3 mb-6">
-          <div
-            class="w-11 h-11 rounded-lg flex items-center justify-center text-white font-bold"
-            style="background: linear-gradient(135deg, #7b63ff, #566dff)"
-          >
-            RS
-          </div>
-          <div>
-            <div class="font-semibold">Resume Builder</div>
-            <div class="text-sm text-[var(--muted,#98a6b8)]">
-              Professional Resume Builder
-            </div>
-          </div>
-        </div>
-
-        <nav class="flex flex-col gap-2 text-sm">
-          <button
-            class="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-[rgba(123,99,255,0.08)] to-[rgba(86,109,255,0.04)] shadow-[0_6px_18px_rgba(86,109,255,0.04)] font-medium section-button"
-            data-target="personal"
-          >
-            <span>👤</span><span>Personal</span>
-          </button>
-          <button
-            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
-            data-target="objective"
-          >
-            <span>🎯</span><span>Objective</span>
-          </button>
-          <button
-            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
-            data-target="education"
-          >
-            <span>🎓</span><span>Education</span>
-          </button>
-          <button
-            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
-            data-target="skills"
-          >
-            <span>💡</span><span>Skills</span>
-          </button>
-          <button
-            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
-            data-target="projects"
-          >
-            <span>📂</span><span>Projects</span>
-          </button>
-          <button
-            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
-            data-target="work"
-          >
-            <span>💼</span><span>Work</span>
-          </button>
-          <button
-            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
-            data-target="certifications"
-          >
-            <span>📜</span><span>Certifications</span>
-          </button>
-          <button
-            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
-            data-target="activities"
-          >
-            <span>🏃</span><span>Activities</span>
-          </button>
-          <button
-            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgba(86,109,255,0.06)] section-button"
-            data-target="template"
-          >
-            <span>📄</span><span>Template</span>
-          </button>
+        <nav
+          class="flex-shrink-0 w-full p-4 md:p-6 border-b border-gray-200 overflow-x-auto"
+        >
+          <ul class="flex gap-2">
+            <!-- note: .section-button + data-target values must match section-* ids -->
+            <li class="flex-shrink-0">
+              <a
+                href="#"
+                data-target="personal"
+                class="section-button block px-4 py-2 rounded-lg text-white text-sm font-medium bg-gradient-to-r from-accent to-accent2 shadow-soft-md"
+                >Personal</a
+              >
+            </li>
+            <li class="flex-shrink-0">
+              <a
+                href="#"
+                data-target="objective"
+                class="section-button block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"
+                >Objective</a
+              >
+            </li>
+            <li class="flex-shrink-0">
+              <a
+                href="#"
+                data-target="skills"
+                class="section-button block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"
+                >Skills</a
+              >
+            </li>
+            <li class="flex-shrink-0">
+              <a
+                href="#"
+                data-target="education"
+                class="section-button block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"
+                >Education</a
+              >
+            </li>
+            <li class="flex-shrink-0">
+              <a
+                href="#"
+                data-target="projects"
+                class="section-button block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"
+                >Projects</a
+              >
+            </li>
+            <li class="flex-shrink-0">
+              <a
+                href="#"
+                data-target="work"
+                class="section-button block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"
+                >Work Experience</a
+              >
+            </li>
+            <li class="flex-shrink-0">
+              <a
+                href="#"
+                data-target="certifications"
+                class="section-button block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"
+                >Certifications</a
+              >
+            </li>
+            <li class="flex-shrink-0">
+              <a
+                href="#"
+                data-target="activities"
+                class="section-button block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"
+                >Activities</a
+              >
+            </li>
+            <li class="flex-shrink-0">
+              <a
+                href="#"
+                data-target="template"
+                class="section-button block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"
+                >Templates</a
+              >
+            </li>
+          </ul>
         </nav>
-      </aside>
 
-      <!-- Main -->
-      <main class="flex-1 ml-64 p-8 overflow-y-auto">
-        <header class="mb-6">
-          <h1 class="text-4xl md:text-[48px] font-extrabold text-accent">
-            Build Your Resume
-          </h1>
-          <p class="text-sm text-[var(--muted,#98a6b8)] mt-2">
-            Create a professional resume in minutes
-          </p>
-        </header>
-
-        <!-- Grid: Sections (2 cols) + Live Preview (1 col) -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Sections Container -->
+        <main
+          class="flex-1 p-8 overflow-y-auto grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
           <div class="md:col-span-2" id="sections-container">
-            <!-- PERSONAL -->
             <section
               id="section-personal"
-              class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
+              class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card"
             >
               <div class="flex items-start justify-between">
                 <div>
@@ -146,11 +147,10 @@
                 <div class="flex flex-col items-center">
                   <div
                     id="avatarPreview"
-                    class="w-28 h-28 rounded-full bg-gradient-to-b from-[#f0f4ff] to-white flex items-center justify-center shadow-soft-lg text-3xl"
+                    class="w-28 h-28 rounded-full bg-gradient-to-b from-[#f0f4ff] to-white flex items-center justify-center shadow-soft-lg text-3xl overflow-hidden"
                   >
                     👤
                   </div>
-
                   <label
                     class="mt-3 inline-block px-4 py-2 rounded-lg text-white"
                     style="
@@ -204,11 +204,10 @@
                         class="mt-1 w-full rounded-lg border border-gray-200 bg-slate-50 p-3"
                       />
                       <p id="phoneErr" class="text-xs text-red-500 mt-1 hidden">
-                        Phone must be numeric and cannot start with 0
+                        Phone must be 10 digits, numeric and cannot start with 0
                       </p>
                     </div>
                   </div>
-
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
                     <div>
                       <label class="block text-sm">LinkedIn URL</label>
@@ -220,7 +219,7 @@
                         class="mt-1 w-full rounded-lg border border-gray-200 bg-slate-50 p-3"
                       />
                       <p id="liErr" class="text-xs text-red-500 mt-1 hidden">
-                        Enter a valid URL
+                        Enter a valid LinkedIn profile URL
                       </p>
                     </div>
                     <div>
@@ -233,15 +232,13 @@
                         class="mt-1 w-full rounded-lg border border-gray-200 bg-slate-50 p-3"
                       />
                       <p id="gitErr" class="text-xs text-red-500 mt-1 hidden">
-                        Enter a valid URL
+                        Enter a valid GitHub profile URL
                       </p>
                     </div>
                   </div>
                 </div>
               </form>
             </section>
-
-            <!-- OBJECTIVE -->
             <section
               id="section-objective"
               class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
@@ -257,7 +254,7 @@
                   id="objectiveText"
                   rows="3"
                   placeholder="Write your objective or use AI to generate..."
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 resize-none"
                 ></textarea>
                 <button
                   id="generateObjectiveBtn"
@@ -265,7 +262,6 @@
                 >
                   Generate Objective
                 </button>
-                <!-- Role Input for AI Objective -->
                 <div class="mb-4">
                   <label
                     for="roleInput"
@@ -281,8 +277,6 @@
                 </div>
               </div>
             </section>
-
-            <!-- EDUCATION -->
             <section
               id="section-education"
               class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
@@ -298,8 +292,6 @@
               </div>
               <div id="educationList" class="mt-4 space-y-3"></div>
             </section>
-
-            <!-- SKILLS -->
             <section
               id="section-skills"
               class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
@@ -354,8 +346,6 @@
                 <div id="skillTags" class="mt-3 flex flex-wrap gap-2"></div>
               </div>
             </section>
-
-            <!-- PROJECTS -->
             <section
               id="section-projects"
               class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
@@ -371,8 +361,6 @@
               </div>
               <div id="projectsList" class="mt-4 space-y-3"></div>
             </section>
-
-            <!-- WORK -->
             <section
               id="section-work"
               class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
@@ -388,8 +376,6 @@
               </div>
               <div id="workList" class="mt-4 space-y-3"></div>
             </section>
-
-            <!-- CERTIFICATIONS -->
             <section
               id="section-certifications"
               class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
@@ -405,8 +391,6 @@
               </div>
               <div id="certList" class="mt-4 space-y-3"></div>
             </section>
-
-            <!-- ACTIVITIES -->
             <section
               id="section-activities"
               class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
@@ -422,8 +406,6 @@
                 class="mt-2 w-full rounded-lg border border-gray-200 p-3 resize-none"
               ></textarea>
             </section>
-
-            <!-- TEMPLATE & EXPORT -->
             <section
               id="section-template"
               class="bg-white rounded-xl2 shadow-soft-md p-6 mb-6 section-card hidden"
@@ -464,15 +446,12 @@
               </div>
             </section>
           </div>
-
-          <!-- Live Preview Panel -->
           <section
             id="livePreviewPanel"
             class="bg-white rounded-xl2 shadow-soft-md p-6"
           >
             <h2 class="text-lg font-semibold mb-3">Live Preview</h2>
             <div id="previewContent" class="space-y-2 text-sm">
-              <!-- Profile Photo -->
               <div class="flex items-center gap-3">
                 <img
                   id="previewPhoto"
@@ -498,28 +477,31 @@
                   </p>
                 </div>
               </div>
-
               <p>
                 <strong>Objective:</strong>
                 <span id="previewObjective">---</span>
               </p>
-
-              <!-- Dynamic Sections -->
               <div id="preview-education-section"></div>
               <div id="preview-projects-section"></div>
               <div id="preview-work-section"></div>
               <div id="preview-certifications-section"></div>
               <div id="preview-skills-section"></div>
             </div>
-            <p>
+            <p class="mt-3">
               <strong>Activities:</strong>
               <span id="previewActivities">---</span>
             </p>
           </section>
+        </main>
+      </div>
+      <footer class="mt-8 text-center text-sm text-gray-500 w-full max-w-6xl">
+        <p>Build your future. Fast & Easy. Privacy Guaranteed.</p>
+        <div class="flex justify-center gap-4 mt-2">
+          <!-- icons omitted for brevity (unchanged) -->
+          <a href="#" class="hover:text-gray-800">...</a>
         </div>
-      </main>
+      </footer>
     </div>
-
     <script src="script.js"></script>
   </body>
 </html>
