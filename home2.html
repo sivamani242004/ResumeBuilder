@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Resume</title>
+
+    <!-- ✅ Bootstrap Icons CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary-color: #0066cc;
+        --primary-hover: #005bb5;
+        --text-color: #333333;
+        --subtext-color: #555555;
+        --bg-light: #c3f1f826;
+        --bg-white: #ffffff;
+        --border-color: #dddddd;
+        --footer-bg: #f2f2f2;
+        --font-family: "Helvetica Neue", Arial, sans-serif;
+      }
+
+      body.dark {
+        --primary-color: #3399ff;
+        --primary-hover: #1a8cff;
+        --text-color: #f0f0f0;
+        --subtext-color: #cccccc;
+        --bg-light: #1e1e1e;
+        --bg-white: #2c2c2c;
+        --border-color: #444444;
+        --footer-bg: #2a2a2a;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--font-family);
+        color: var(--text-color);
+        background-color: var(--bg-light);
+        line-height: 1.5;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      a {
+        text-decoration: none;
+        color: var(--primary-color);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 0 20px;
+      }
+
+      header {
+        background: var(--bg-white);
+        border-bottom: 1px solid var(--border-color);
+        padding: 15px 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+
+      header .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .logo h1 {
+        font-size: 1.6rem;
+        color: var(--primary-color);
+        margin: 0;
+      }
+
+      nav ul {
+        display: flex;
+        gap: 24px;
+        list-style: none;
+        flex-wrap: wrap;
+      }
+
+      nav a {
+        font-weight: 500;
+        color: var(--text-color);
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center; /* ✅ Buttons & toggle same line lo */
+        gap: 10px;
+      }
+
+      .header-actions a {
+        padding: 10px 18px;
+        border-radius: 4px;
+        font-weight: 600;
+        display: inline-block;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .btn-primary {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-hover);
+      }
+
+      .btn-secondary {
+        border: 1px solid var(--primary-color);
+        color: var(--primary-color);
+        background: transparent;
+      }
+
+      .btn-secondary:hover {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      /* 🌙 Dark mode toggle */
+      .dark-toggle {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 1px solid var(--border-color);
+        background: var(--bg-white);
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+
+      .dark-toggle i {
+        font-size: 18px;
+        color: var(--text-color);
+      }
+
+      .hero {
+        background: var(--bg-light);
+        padding: 80px 0;
+        text-align: center;
+        margin-top: 190px;
+        margin-bottom: 190px;
+      }
+
+      .hero h2 {
+        font-size: 2.75rem;
+        margin-bottom: 24px;
+      }
+
+      .hero p {
+        font-size: 1.25rem;
+        margin-bottom: 32px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        color: var(--subtext-color);
+      }
+
+      .btn-large {
+        padding: 14px 28px;
+        font-size: 1.2rem;
+        border-radius: 4px;
+      }
+
+      .features {
+        padding: 60px 0;
+        background: var(--bg-white);
+      }
+
+      .features h3 {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 2rem;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 30px;
+      }
+
+      .feature {
+        text-align: center;
+      }
+
+      .feature i {
+        font-size: 48px;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        display: block;
+      }
+
+      .feature h4 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+      }
+
+      .feature p {
+        color: var(--subtext-color);
+      }
+
+      .examples {
+        background: var(--bg-light);
+        padding: 60px 0;
+      }
+
+      .examples h3 {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 2rem;
+      }
+
+      .example-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+      }
+
+      .card {
+        background: var(--bg-white);
+        border: 1px solid var(--border-color);
+        text-align: center;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+
+      .card img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .card h4 {
+        margin: 16px 0;
+        font-size: 1.25rem;
+      }
+
+      .btn-small {
+        background: var(--primary-color);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        display: inline-block;
+      }
+
+      footer {
+        background: var(--footer-bg);
+        padding: 40px 0 20px 0;
+        text-align: center;
+        font-size: 0.9rem;
+        transition: background-color 0.3s ease;
+      }
+
+      @media (max-width: 768px) {
+        nav ul {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        header .container {
+          flex-direction: column;
+          align-items: start;
+        }
+
+        .hero h2 {
+          font-size: 2rem;
+        }
+
+        .hero p {
+          font-size: 1.1rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <h1>MyPerfectResume</h1>
+        </div>
+        <div class="header-actions">
+          <a href="#" class="btn-primary">Build My Resume</a>
+          <a href="#" class="btn-primary">Templates</a>
+          <a href="#" class="btn-secondary">Login</a>
+          <a href="#" class="btn-secondary">Register</a>
+          <!-- 🌙 Dark Mode Toggle -->
+          <div class="dark-toggle" onclick="toggleDarkMode()">
+            <i class="bi bi-moon-fill" id="darkIcon"></i>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="container">
+        <h2>Create Your Perfect Resume in Minutes</h2>
+        <p>
+          Choose from ATS-friendly templates, get expert content suggestions,
+          and download in PDF, Word, TXT formats.
+        </p>
+        <a
+          href="index.html"
+          class="btn-primary btn-large"
+          onclick="startBuilder()"
+          >Start Now</a
+        >
+      </div>
+    </section>
+
+    <!-- ✅ FEATURES SECTION with Bootstrap Icons -->
+    <section class="features">
+      <div class="container">
+        <h3>Features</h3>
+        <div class="feature-grid">
+          <div class="feature">
+            <i class="bi bi-layout-text-window-reverse"></i>
+            <h4>Templates</h4>
+            <p>Pick from 40+ professional designs optimized for ATS.</p>
+          </div>
+          <div class="feature">
+            <i class="bi bi-lightbulb-fill"></i>
+            <h4>Content Suggestions</h4>
+            <p>Pre-written bullet points & industry-specific suggestions.</p>
+          </div>
+          <div class="feature">
+            <i class="bi bi-phone-fill"></i>
+            <h4>Mobile Friendly</h4>
+            <p>Create and edit resumes on any device, anytime.</p>
+          </div>
+          <div class="feature">
+            <i class="bi bi-file-earmark-arrow-down-fill"></i>
+            <h4>Multiple Formats</h4>
+            <p>Download as PDF, Word, or plain text.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="examples">
+      <div class="container">
+        <h3>Resume Examples</h3>
+        <div class="example-cards">
+          <div class="card">
+            <img
+              src="https://via.placeholder.com/300x160"
+              alt="Example Resume"
+            />
+            <h4>Customer Service Representative</h4>
+            <a href="#" class="btn-small">Customize</a>
+          </div>
+          <div class="card">
+            <img
+              src="https://via.placeholder.com/300x160"
+              alt="Example Resume"
+            />
+            <h4>Nurse Practitioner</h4>
+            <a href="#" class="btn-small">Customize</a>
+          </div>
+          <div class="card">
+            <img
+              src="https://via.placeholder.com/300x160"
+              alt="Example Resume"
+            />
+            <h4>Software Developer</h4>
+            <a href="#" class="btn-small">Customize</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2025 MyPerfectResume. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+      function startBuilder() {
+        alert("Resume Builder is starting...");
+      }
+
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark");
+        const icon = document.getElementById("darkIcon");
+        if (document.body.classList.contains("dark")) {
+          icon.classList.remove("bi-moon-fill");
+          icon.classList.add("bi-sun-fill");
+        } else {
+          icon.classList.remove("bi-sun-fill");
+          icon.classList.add("bi-moon-fill");
+        }
+      }
+    </script>
+  </body>
+</html>
