@@ -401,7 +401,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "card p-4 border rounded-lg shadow-sm bg-gray-50 space-y-3 relative";
     card.innerHTML =
       fieldsHtml +
-      `<button class="remove-btn absolute top-2 right-2 text-red-500">Remove</button>`;
+      `<button class="remove-btn absolute bootom-0 right-2 text-red-500">Remove</button>`;
 
     const removeBtn = card.querySelector(".remove-btn");
     removeBtn.addEventListener("click", () => {
